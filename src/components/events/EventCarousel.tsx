@@ -2,41 +2,41 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, ChevronRight, ChevronLeft } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import dynamic from "next/dynamic";
 
 const EventGlobe = dynamic(() => import("./EventGlobe"), { ssr: false });
 
 const EVENTS = [
   {
-    id: "earth",
-    title: "EARTH",
-    subtitle: "PLANET",
+    id: "robowars",
+    title: "ROBO WARS",
+    subtitle: "FLAGSHIP EVENT",
     description:
-      "Learn more about this facinating miracle that we call our home, Planet Earth. Course enrollment starts today. Early Bird tickets typically last a week, don't miss out!",
-    textureUrl: "/planets/earth.jpg",
-    prevLabel: "VENUS",
-    nextLabel: "MARS",
+      "Witness the ultimate clash of steel and circuits. Design, build, and battle your robots in an arena of pure mechanical fury. Registration opens soon — gear up for glory!",
+    textureUrl: "/planets/robowars.jpg",
+    prevLabel: "HACKINNOVISION",
+    nextLabel: "STELLAR NIGHT",
   },
   {
-    id: "mars",
-    title: "MARS",
-    subtitle: "PLANET",
+    id: "stellarnight",
+    title: "STELLAR NIGHT",
+    subtitle: "FLAGSHIP EVENT",
     description:
-      "Mars is the fourth planet from the Sun. Known as the Red Planet, it has captivated humanity for centuries. Course enrollment starts today. Early Bird tickets typically last a week!",
-    textureUrl: "/planets/mars.jpg",
-    prevLabel: "EARTH",
-    nextLabel: "VENUS",
+      "An evening of celestial wonder — live performances, immersive light shows, and cosmic vibes under the stars. The night sky comes alive with music, art, and unforgettable energy.",
+    textureUrl: "/planets/stellarnight.jpg",
+    prevLabel: "ROBO WARS",
+    nextLabel: "HACKINNOVISION",
   },
   {
-    id: "venus",
-    title: "VENUS",
-    subtitle: "PLANET",
+    id: "hackinnovision",
+    title: "HACKINNOVISION",
+    subtitle: "FLAGSHIP EVENT",
     description:
-      "Venus is the hottest planet in our solar system. It has a thick atmosphere full of greenhouse gases and clouds of sulfuric acid. Course enrollment starts today!",
-    textureUrl: "/planets/venus.jpg",
-    prevLabel: "MARS",
-    nextLabel: "EARTH",
+      "A 24-hour hackathon where brilliant minds converge to build the future. Code, collaborate, and compete for glory. Push the boundaries of innovation — one commit at a time.",
+    textureUrl: "/planets/hackinnovision.jpg",
+    prevLabel: "STELLAR NIGHT",
+    nextLabel: "ROBO WARS",
   },
 ];
 
@@ -57,54 +57,55 @@ const slideVariants = {
   }),
 };
 
-const sideTextVariants = {
-  enter: (direction: number) => ({
-    y: direction > 0 ? 20 : -20,
-    opacity: 0,
-  }),
-  center: {
-    y: 0,
-    opacity: 1,
-  },
-  exit: (direction: number) => ({
-    y: direction < 0 ? 20 : -20,
-    opacity: 0,
-  }),
-};
 
-export default function EventCarousel() {
+export default function EventCarousel({ isActive = true }: { isActive?: boolean }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-  const [isScrolling, setIsScrolling] = useState(false);
+  const isScrollingRef = React.useRef(false);
 
   const currentEvent = EVENTS[currentIndex];
 
   const paginate = (newDirection: number) => {
     setDirection(newDirection);
-    let newIndex = currentIndex + newDirection;
-    if (newIndex < 0) newIndex = EVENTS.length - 1;
-    if (newIndex >= EVENTS.length) newIndex = 0;
-    setCurrentIndex(newIndex);
+    setCurrentIndex(prev => {
+      const next = prev + newDirection;
+      if (next < 0) return EVENTS.length - 1;
+      if (next >= EVENTS.length) return 0;
+      return next;
+    });
   };
 
-  const handleWheel = (e: React.WheelEvent) => {
-    if (isScrolling) return;
-    
-    if (e.deltaY > 50) {
-      setIsScrolling(true);
-      paginate(1);
-      setTimeout(() => setIsScrolling(false), 1000);
-    } else if (e.deltaY < -50) {
-      setIsScrolling(true);
-      paginate(-1);
-      setTimeout(() => setIsScrolling(false), 1000);
-    }
-  };
+  React.useEffect(() => {
+    if (!isActive) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      // Allow scrolling up to the hero if at the first planet
+      if (currentIndex === 0 && e.deltaY < 0) {
+        return;
+      }
+      
+      e.preventDefault();
+
+      if (isScrollingRef.current) return;
+      
+      if (e.deltaY > 50) {
+        isScrollingRef.current = true;
+        paginate(1);
+        setTimeout(() => { isScrollingRef.current = false; }, 1000);
+      } else if (e.deltaY < -50) {
+        isScrollingRef.current = true;
+        paginate(-1);
+        setTimeout(() => { isScrollingRef.current = false; }, 1000);
+      }
+    };
+
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    return () => window.removeEventListener("wheel", handleWheel);
+  }, [isActive, currentIndex]);
 
   return (
     <div 
-      className="relative h-screen w-full overflow-hidden text-white flex flex-col selection:bg-white/30 bg-[#050914]"
-      onWheel={handleWheel}
+      className="relative h-screen w-full overflow-hidden text-white flex flex-col selection:bg-white/30 bg-transparent"
       style={{ fontFamily: "var(--font-inter), sans-serif" }}
     >
       
@@ -133,7 +134,7 @@ export default function EventCarousel() {
             </h2>
 
             {/* Title */}
-            <h1 className="text-7xl md:text-[9rem] leading-none tracking-[0.1em] mb-5 drop-shadow-xl" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
+            <h1 className="text-4xl md:text-7xl lg:text-[7.5rem] whitespace-nowrap leading-none tracking-[0.1em] mb-5 drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)] font-bold" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
               {currentEvent.title}
             </h1>
 
@@ -141,7 +142,7 @@ export default function EventCarousel() {
             <div className="w-12 h-[2px] bg-cyan-400 mb-6" />
 
             {/* Description */}
-            <p className="text-sm md:text-base text-gray-300 max-w-xl mx-auto leading-relaxed mb-8 drop-shadow-md">
+            <p className="text-sm md:text-base leading-relaxed text-white font-medium max-w-xl mx-auto drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] mb-8">
               {currentEvent.description}
             </p>
             
@@ -152,50 +153,6 @@ export default function EventCarousel() {
           </motion.div>
         </AnimatePresence>
       </main>
-
-      {/* ===== SIDE NAV & FOOTER ===== */}
-      
-      {/* Prev Navigation Text (left) */}
-      <div className="absolute left-6 md:left-24 top-1/2 -translate-y-1/2 z-30 pointer-events-none">
-        <AnimatePresence mode="wait" custom={direction}>
-          <motion.button 
-            key={currentIndex}
-            custom={direction}
-            variants={sideTextVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.4, ease: "easeInOut" }}
-            onClick={() => paginate(-1)}
-            className="group cursor-pointer pointer-events-auto"
-          >
-            <span className="text-xs md:text-sm tracking-[0.4em] uppercase text-gray-400 group-hover:text-white transition-colors">
-              {currentEvent.prevLabel}
-            </span>
-          </motion.button>
-        </AnimatePresence>
-      </div>
-
-      {/* Next Navigation Text (right) */}
-      <div className="absolute right-6 md:right-24 top-1/2 -translate-y-1/2 z-30 pointer-events-none">
-        <AnimatePresence mode="wait" custom={direction}>
-          <motion.button 
-            key={currentIndex}
-            custom={direction}
-            variants={sideTextVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.4, ease: "easeInOut" }}
-            onClick={() => paginate(1)}
-            className="group cursor-pointer pointer-events-auto"
-          >
-            <span className="text-xs md:text-sm tracking-[0.4em] uppercase text-gray-400 group-hover:text-white transition-colors">
-              {currentEvent.nextLabel}
-            </span>
-          </motion.button>
-        </AnimatePresence>
-      </div>
 
       {/* Down Arrow */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-30 animate-bounce pointer-events-none">
