@@ -80,5 +80,31 @@ body {
   animation: starTwinkle var(--twinkle-duration, 3s) infinite ease-in-out var(--twinkle-delay, 0s);
 }
 
+@keyframes astroFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-22px) rotate(3deg);
+  }
+}
+
+.animate-astro-float {
+  animation: astroFloat 6s ease-in-out infinite;
+}
+
+@keyframes astroFloatReverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(20px) rotate(-3deg);
+  }
+}
+
+.animate-astro-float-reverse {
+  animation: astroFloatReverse 7s ease-in-out infinite;
+}
+
 
 

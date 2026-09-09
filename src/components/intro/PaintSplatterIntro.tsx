@@ -114,26 +114,8 @@ export default function PaintSplatterIntro({
         ))}
       </div>
 
-      {/* Pulsing Ink Ring Emblem & Title Section */}
+      {/* Pulsing Title & Enter Section */}
       <div className="relative z-10 flex flex-col items-center gap-6 px-4 text-center">
-        <div className="relative w-28 h-28 sm:w-36 sm:h-36 flex items-center justify-center">
-          <div className="absolute inset-0 rounded-full border border-amber-500/30 animate-ping opacity-25" />
-          <div className="absolute inset-2 rounded-full border border-teal-500/40 animate-pulse" />
-          
-          {/* Theme Ink Droplet Icon */}
-          <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-tr from-amber-600 to-teal-400 p-[2px] shadow-[0_0_40px_rgba(245,158,11,0.4)]">
-            <div className="w-full h-full bg-[#020712] rounded-full flex items-center justify-center">
-              <svg
-                className="w-8 h-8 sm:w-10 sm:h-10 text-amber-400 animate-bounce"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
         {/* Title Image */}
         <div className="space-y-1 flex flex-col items-center">
           <div className="relative w-[75vw] max-w-[480px] h-[80px] sm:h-[110px]">

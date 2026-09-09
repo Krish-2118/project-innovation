@@ -34,6 +34,7 @@ export default function PlanetsCanvas({ mouseX = 0, mouseY = 0 }: PlanetsCanvasP
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.35;
     container.appendChild(renderer.domElement);
@@ -157,9 +158,10 @@ export default function PlanetsCanvas({ mouseX = 0, mouseY = 0 }: PlanetsCanvasP
       goldPlanet.rotation.y += 0.003;
       rings.rotation.z += 0.0004;
 
-      // Parallax camera response
-      const targetCamX = mouseRef.current.x * 0.9;
-      const targetCamY = mouseRef.current.y * 0.9;
+      // Parallax camera response (Disabled on mobile devices)
+      const isMobile = window.innerWidth < 768;
+      const targetCamX = isMobile ? 0 : mouseRef.current.x * 0.9;
+      const targetCamY = isMobile ? 0 : mouseRef.current.y * 0.9;
 
       camera.position.x += (targetCamX - camera.position.x) * 0.05;
       camera.position.y += (targetCamY - camera.position.y) * 0.05;

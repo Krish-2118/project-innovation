@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, createContext } from "react";
 import Navbar from "@/components/layout/Navbar";
 import PaintSplatterIntro from "@/components/intro/PaintSplatterIntro";
+import { RocketTransitionProvider } from "@/components/transition/RocketTransitionContext";
 
 export const AudioContext = createContext({
   isPlaying: false,
@@ -86,24 +87,27 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <AudioContext.Provider value={{ isPlaying, toggleAudio }}>
-      <PaintSplatterIntro onStart={handleStart} showPreloader={showPreloader} />
+      <RocketTransitionProvider>
+        <PaintSplatterIntro onStart={handleStart} showPreloader={showPreloader} />
 
-      <div
-        ref={wrapperRef}
-        className={`relative min-h-screen w-full bg-[#020712] transition-opacity duration-300 ${
-          !isActive
-            ? "opacity-0 pointer-events-none"
-            : !removeGif
-            ? "ink-mask opacity-100"
-            : "opacity-100"
-        }`}
-      >
-        {/* Global Persistent Navbar */}
-        <Navbar isPlaying={isPlaying} onToggleAudio={toggleAudio} />
+        <div
+          ref={wrapperRef}
+          className={`relative min-h-screen w-full bg-[#020712] transition-opacity duration-300 ${
+            !isActive
+              ? "opacity-0 pointer-events-none"
+              : !removeGif
+              ? "ink-mask opacity-100"
+              : "opacity-100"
+          }`}
+        >
+          {/* Global Persistent Navbar */}
+          <Navbar isPlaying={isPlaying} onToggleAudio={toggleAudio} />
 
-        {/* Page Content */}
-        {children}
-      </div>
+          {/* Page Content */}
+          {children}
+        </div>
+      </RocketTransitionProvider>
     </AudioContext.Provider>
   );
 }
+
