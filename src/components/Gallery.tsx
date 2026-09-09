@@ -1,11 +1,8 @@
-import React from 'react';
+"use client";
 
-const Gallery = () => {
-  return (
-    <div>
-      <h2>Gallery Component</h2>
-    </div>
-  );
-};
+import React from "react";
+import Cinematic3DGallery from "./Cinematic3DGallery";
 
-export default Gallery;
+export default function Gallery() {
+  return <Cinematic3DGallery />;
+}
