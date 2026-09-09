@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useRef } from "react";
-import { Canvas, useFrame, useLoader } from "@react-three/fiber";
-import { TextureLoader, Mesh, MathUtils } from "three";
-import { Stars } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Mesh, MathUtils, Texture } from "three";
+import { Stars, useTexture } from "@react-three/drei";
 
 interface PlanetProps {
-  texture: any;
+  texture: Texture;
   index: number;
   currentIndex: number;
   total: number;
@@ -14,7 +14,6 @@ interface PlanetProps {
 
 function Planet({ texture, index, currentIndex, total }: PlanetProps) {
   const meshRef = useRef<Mesh>(null);
-  const glowRef = useRef<Mesh>(null);
 
   // Calculate relative position with wrapping for infinite carousel effect
   let diff = index - currentIndex;
@@ -24,30 +23,20 @@ function Planet({ texture, index, currentIndex, total }: PlanetProps) {
   useFrame(() => {
     if (!meshRef.current) return;
     
-    // Target configurations based on position
-    let targetX = diff * 20; // Default far away
-    let targetY = 0;
-    let targetZ = -20;
-    let targetScale = 0;     // Invisible by default
-
+    // For 3 items, angle diff is either 0, 120 (2.09 rad), or 240 (-2.09 rad)
+    const angle = diff * (2 * Math.PI / total);
+    
+    // Circle radius is 16. Center (diff=0) is pushed forward to z=0, sides are pushed back.
+    const radius = 16;
+    
+    const targetX = Math.sin(angle) * radius;
+    const targetZ = Math.cos(angle) * radius - radius; // so angle=0 is z=0, angle=120 is z=-24
+    let targetY = -1;
+    let targetScale = 0.6;
+    
     if (diff === 0) {
-      // Center (Active Planet) - Pushed down and larger
-      targetX = 0;
       targetY = -5.8;
-      targetZ = 0;
       targetScale = 1.2;
-    } else if (diff === 1) {
-      // Right (Next Planet) - Far out to the edge
-      targetX = 16;
-      targetY = -1;
-      targetZ = -20;
-      targetScale = 0.6;
-    } else if (diff === -1) {
-      // Left (Previous Planet) - Far out to the edge
-      targetX = -16;
-      targetY = -1;
-      targetZ = -20;
-      targetScale = 0.6;
     }
 
     // Smoothly interpolate position
@@ -61,25 +50,16 @@ function Planet({ texture, index, currentIndex, total }: PlanetProps) {
 
     // Constant slow rotation
     meshRef.current.rotation.y += 0.001;
-
-    // Fade out glow if not active
-    if (glowRef.current) {
-      const targetOpacity = diff === 0 ? 0.08 : 0;
-      const mat = glowRef.current.material as any;
-      mat.opacity = MathUtils.lerp(mat.opacity, targetOpacity, 0.05);
-    }
   });
 
   return (
     <mesh ref={meshRef} rotation={[0.3, 0, 0]}>
       <sphereGeometry args={[4, 64, 64]} />
-      <meshStandardMaterial map={texture} roughness={0.5} metalness={0.1} />
-      
-      {/* Atmosphere Glow */}
-      <mesh ref={glowRef}>
-        <sphereGeometry args={[4.1, 64, 64]} />
-        <meshBasicMaterial color="#4488ff" transparent opacity={0} depthWrite={false} />
-      </mesh>
+      <meshStandardMaterial 
+        map={texture} 
+        roughness={0.7}
+        metalness={0.1}
+      />
     </mesh>
   );
 }
@@ -90,14 +70,13 @@ interface SceneProps {
 }
 
 function Scene({ textures, currentIndex }: SceneProps) {
-  const loadedTextures = useLoader(TextureLoader, textures);
+  const loadedTextures = useTexture(textures);
 
   return (
     <>
-      <ambientLight intensity={0.3} />
-      <directionalLight position={[5, 3, 5]} intensity={2.0} />
-      <directionalLight position={[-3, 2, -5]} intensity={0.6} color="#6688ff" />
-      <directionalLight position={[0, -3, 2]} intensity={0.3} color="#4466ff" />
+      <ambientLight intensity={0.5} />
+      <directionalLight position={[10, 5, 5]} intensity={3.0} />
+      <directionalLight position={[-10, -5, -5]} intensity={0.8} color="#6688ff" />
       
       {/* Immersive Starry Background */}
       <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
