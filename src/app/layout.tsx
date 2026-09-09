@@ -1,23 +1,24 @@
 import type { Metadata } from "next";
-import { Cinzel, Outfit, Playfair_Display, Inter } from "next/font/google";
+import { Exo_2, Lora, Outfit, Inter } from "next/font/google";
 import AppShell from "@/components/layout/AppShell";
 import "./globals.css";
 
-const cinzel = Cinzel({
-  variable: "--font-cinzel",
+const exo2 = Exo_2({
+  variable: "--font-exo2",
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "800"],
+});
+
+const lora = Lora({
+  variable: "--font-lora",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
-});
-
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
 });
 
 const inter = Inter({
@@ -38,9 +39,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cinzel.variable} ${outfit.variable} ${playfair.variable} ${inter.variable} h-full antialiased`}
+      className={`${exo2.variable} ${lora.variable} ${outfit.variable} ${inter.variable} h-full antialiased`}
     >
-      <body className={`${outfit.className} min-h-full flex flex-col bg-[#020712] text-white`}>
+      <body className={`${lora.className} min-h-full flex flex-col bg-[#020712] text-white`}>
         <AppShell>{children}</AppShell>
       </body>
     </html>
