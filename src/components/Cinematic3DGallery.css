@@ -1,0 +1,145 @@
+/* ==========================================================================
+   CINEMATIC 3D GALLERY STYLING (SCOPED STRICTLY TO .cinematic-gallery-*)
+   ========================================================================== */
+
+.cinematic-gallery-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  font-family: inherit;
+}
+
+/* Dynamic 3D Scene Perspective Stage */
+.cinematic-gallery-perspective {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  perspective: 1200px;
+  perspective-origin: 50% 45%;
+  transform-style: preserve-3d;
+}
+
+@media (min-width: 1024px) {
+  .cinematic-gallery-perspective {
+    perspective: 1400px;
+  }
+}
+
+.cinematic-gallery-stage {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.cinematic-gallery-stage-dragging,
+.cinematic-gallery-stage-dragging .cinematic-gallery-card {
+  cursor: grabbing !important;
+}
+
+/* Card 3D Frame & Surface */
+.cinematic-gallery-card-frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.75),
+    0 0 30px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25);
+  transition: box-shadow 0.4s ease, border-color 0.4s ease;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: #0d1527;
+}
+
+.cinematic-gallery-card-active .cinematic-gallery-card-frame {
+  border-color: rgba(251, 191, 36, 0.4);
+  box-shadow: 
+    0 30px 60px -10px rgba(0, 0, 0, 0.9),
+    0 0 35px rgba(251, 191, 36, 0.25),
+    inset 0 1px 2px rgba(255, 255, 255, 0.4);
+}
+
+/* Card Image */
+.cinematic-gallery-card-img {
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.cinematic-gallery-card-frame:hover .cinematic-gallery-card-img {
+  transform: scale(1.06);
+}
+
+/* Subtle Vignette & Light Reflections */
+.cinematic-gallery-card-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(2, 7, 18, 0) 0%,
+    rgba(2, 7, 18, 0.2) 60%,
+    rgba(2, 7, 18, 0.85) 100%
+  );
+}
+
+/* Control Buttons Glassmorphism */
+.cinematic-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(13, 21, 39, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.cinematic-nav-btn:hover {
+  background: rgba(251, 191, 36, 0.2);
+  border-color: rgba(251, 191, 36, 0.6);
+  color: #fbbf24;
+  transform: scale(1.08);
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+}
+
+.cinematic-nav-btn:active {
+  transform: scale(0.95);
+}
+
+/* Indicator Dots */
+.cinematic-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.25);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  cursor: pointer;
+}
+
+.cinematic-dot-active {
+  width: 28px;
+  background: linear-gradient(90deg, #fbbf24, #2dd4bf);
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.6);
+}
