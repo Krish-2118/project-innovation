@@ -23,14 +23,10 @@ function Planet({ texture, index, currentIndex, total }: PlanetProps) {
   useFrame(() => {
     if (!meshRef.current) return;
     
-    // For 3 items, angle diff is either 0, 120 (2.09 rad), or 240 (-2.09 rad)
     const angle = diff * (2 * Math.PI / total);
-    
-    // Circle radius is 16. Center (diff=0) is pushed forward to z=0, sides are pushed back.
     const radius = 16;
-    
     const targetX = Math.sin(angle) * radius;
-    const targetZ = Math.cos(angle) * radius - radius; // so angle=0 is z=0, angle=120 is z=-24
+    const targetZ = Math.cos(angle) * radius - radius;
     let targetY = -1;
     let targetScale = 0.6;
     
@@ -39,16 +35,13 @@ function Planet({ texture, index, currentIndex, total }: PlanetProps) {
       targetScale = 1.2;
     }
 
-    // Smoothly interpolate position
     meshRef.current.position.x = MathUtils.lerp(meshRef.current.position.x, targetX, 0.04);
     meshRef.current.position.y = MathUtils.lerp(meshRef.current.position.y, targetY, 0.04);
     meshRef.current.position.z = MathUtils.lerp(meshRef.current.position.z, targetZ, 0.04);
     
-    // Smoothly interpolate scale
     const scale = MathUtils.lerp(meshRef.current.scale.x, targetScale, 0.04);
     meshRef.current.scale.set(scale, scale, scale);
 
-    // Constant slow rotation
     meshRef.current.rotation.y += 0.001;
   });
 
@@ -78,7 +71,6 @@ function Scene({ textures, currentIndex }: SceneProps) {
       <directionalLight position={[10, 5, 5]} intensity={3.0} />
       <directionalLight position={[-10, -5, -5]} intensity={0.8} color="#6688ff" />
       
-      {/* Immersive Starry Background */}
       <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
 
       {loadedTextures.map((texture, index) => (

@@ -11,7 +11,8 @@
 :root {
   --background: #020712;
   --foreground: #fef3c7;
-  --font-cinzel: var(--font-cinzel), serif;
+  --font-exo2: var(--font-exo2), sans-serif;
+  --font-lora: var(--font-lora), serif;
   --font-outfit: var(--font-outfit), sans-serif;
   --font-chopsic: 'Chopsic', sans-serif;
 }
@@ -19,7 +20,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-cinzel: var(--font-cinzel);
+  --font-exo2: var(--font-exo2);
+  --font-lora: var(--font-lora);
   --font-outfit: var(--font-outfit);
   --font-chopsic: var(--font-chopsic);
 }
@@ -27,7 +29,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-outfit);
+  font-family: var(--font-lora);
 }
 
 .ink-mask {

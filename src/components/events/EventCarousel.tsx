@@ -30,7 +30,7 @@ const EVENTS = [
   },
   {
     id: "hackinnovision",
-    title: "HACKINNOVISION",
+    title: "HACK INNOVISION",
     subtitle: "FLAGSHIP EVENT",
     description:
       "A 24-hour hackathon where brilliant minds converge to build the future. Code, collaborate, and compete for glory. Push the boundaries of innovation — one commit at a time.",
@@ -115,7 +115,7 @@ export default function EventCarousel({ isActive = true }: { isActive?: boolean 
       </div>
 
       {/* ===== MAIN CONTENT ===== */}
-      <main className="flex-grow flex flex-col items-center justify-start pt-[8vh] md:pt-[10vh] relative z-20 px-4 pointer-events-none">
+      <main className="flex-grow flex flex-col items-center justify-start pt-[14vh] md:pt-[18vh] relative z-20 px-4 pointer-events-none">
         
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
@@ -129,12 +129,12 @@ export default function EventCarousel({ isActive = true }: { isActive?: boolean 
             className="flex flex-col items-center text-center max-w-3xl pointer-events-auto"
           >
             {/* Subtitle */}
-            <h2 className="text-sm md:text-lg uppercase tracking-[0.4em] text-gray-400 mb-3">
+            <h2 className="text-[10px] md:text-sm uppercase tracking-[0.5em] text-cyan-300 mb-4 font-medium drop-shadow-[0_0_18px_rgba(34,211,238,0.7)]" style={{ fontFamily: "var(--font-exo2), sans-serif" }}>
               {currentEvent.subtitle}
             </h2>
 
             {/* Title */}
-            <h1 className="text-4xl md:text-7xl lg:text-[7.5rem] whitespace-nowrap leading-none tracking-[0.1em] mb-5 drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)] font-bold" style={{ fontFamily: "var(--font-playfair), Georgia, serif" }}>
+            <h1 className="text-3xl md:text-6xl lg:text-[6.8rem] whitespace-nowrap leading-[0.9] tracking-[0.08em] mb-5 drop-shadow-[0_12px_30px_rgba(0,0,0,0.85)] font-semibold" style={{ fontFamily: "var(--font-exo2), sans-serif" }}>
               {currentEvent.title}
             </h1>
 
@@ -142,12 +142,12 @@ export default function EventCarousel({ isActive = true }: { isActive?: boolean 
             <div className="w-12 h-[2px] bg-cyan-400 mb-6" />
 
             {/* Description */}
-            <p className="text-sm md:text-base leading-relaxed text-white font-medium max-w-xl mx-auto drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] mb-8">
+            <p className="text-sm md:text-base leading-relaxed text-slate-100/90 max-w-xl mx-auto drop-shadow-[0_4px_10px_rgba(0,0,0,0.8)] mb-8" style={{ fontFamily: "var(--font-lora), serif" }}>
               {currentEvent.description}
             </p>
             
             {/* CTA Button */}
-            <button className="border border-gray-400 text-white px-10 py-3 rounded-full font-bold text-sm tracking-[0.2em] hover:bg-white hover:text-black transition-all duration-300 backdrop-blur-sm">
+            <button className="border border-cyan-400/60 text-white px-10 py-3 rounded-full font-bold text-[10px] md:text-xs tracking-[0.28em] hover:bg-cyan-300 hover:text-slate-950 transition-all duration-300 backdrop-blur-sm shadow-[0_0_20px_rgba(34,211,238,0.18)]" style={{ fontFamily: "var(--font-exo2), sans-serif" }}>
               GET STARTED
             </button>
           </motion.div>
