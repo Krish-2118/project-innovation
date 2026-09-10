@@ -6,6 +6,7 @@ import { ChevronRight, Rocket } from "lucide-react";
 import PlanetsCanvas from "@/components/home/PlanetsCanvas";
 import ConstellationsCanvas from "@/components/home/ConstellationsCanvas";
 import { useRocketTransition } from "@/components/transition/RocketTransitionContext";
+import Footer from "@/components/layout/Footer";
 
 export default function Home() {
   const mouseRef = useRef({ targetX: 0, targetY: 0, currentX: 0, currentY: 0 });
@@ -55,74 +56,77 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="hero-bg relative w-full h-screen overflow-hidden bg-[#020712]">
-      {/* 1. Deep Space Background - Subtle smooth reverse parallax */}
-      <div
-        className="absolute -inset-12 select-none pointer-events-none"
-        style={{
-          transform: `translate3d(${offset.x * -12}px, ${offset.y * -12}px, 0) scale(1.08)`,
-        }}
-      >
-        <Image
-          src="/bg.png"
-          alt="Space Background"
-          fill
-          priority
-          unoptimized
-          className="object-cover object-center"
-        />
-      </div>
-
-
-
-      {/* 2. Midground Integrated Cloud Layer (TEMPORARILY COMMENTED OUT)
-      <div
-        className="max-md:hidden absolute inset-0 pointer-events-none mix-blend-multiply select-none z-0"
-        style={{
-          transform: `translate3d(${offset.x * 22}px, ${offset.y * 22}px, 0)`,
-        }}
-      >
-        <div className="absolute -top-[20%] left-[20%] w-[70vw] h-[60vh] transform rotate-[165deg] scale-y-[-1]">
+    <div className="w-full flex flex-col min-h-screen overflow-x-hidden bg-[#020712]">
+      
+      {/* FIXED COSMIC BACKGROUND LAYER */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        {/* 1. Deep Space Background - Subtle smooth reverse parallax */}
+        <div
+          className="absolute -inset-12 select-none"
+          style={{
+            transform: `translate3d(${offset.x * -12}px, ${offset.y * -12}px, 0) scale(1.08)`,
+          }}
+        >
           <Image
-            src="/cloud.png"
-            alt="Top-Left Cloud"
+            src="/bg.png"
+            alt="Space Background"
             fill
             priority
-            className="object-contain object-top-left"
+            unoptimized
+            className="object-cover object-center"
           />
         </div>
-
-        <div className="absolute top-[22%] -left-[15%] w-[65vw] h-[55vh] transform -rotate-[15deg]">
-          <Image
-            src="/cloud.png"
-            alt="Mid-Left Cloud"
-            fill
-            className="object-contain object-left"
-          />
-        </div>
-
-        <div className="absolute -bottom-[8%] -right-[8%] w-[85vw] h-[70vh] transform -rotate-[12deg] scale-x-[-1]">
-          <Image
-            src="/cloud.png"
-            alt="Bottom-Right Cloud"
-            fill
-            className="object-contain object-bottom-right"
-          />
-        </div>
-
-        <div className="absolute -bottom-[50%] -left-[10%] w-[60vw] h-[50vh] transform rotate-[25deg]">
-          <Image
-            src="/cloud.png"
-            alt="Bottom-Left Cloud"
-            fill
-            className="object-contain object-bottom-left"
-          />
-        </div>
+        
+        {/* 2. Deep Space 3D Constellations & Full-Page Shooting Stars Canvas */}
+        <ConstellationsCanvas mouseX={offset.x} mouseY={offset.y} />
       </div>
-      */}
 
-      {/* 2. Deep Space 3D Constellations & Full-Page Shooting Stars Canvas */}
-      <ConstellationsCanvas mouseX={offset.x} mouseY={offset.y} />
+      <main className="hero-bg relative w-full h-screen shrink-0 overflow-hidden z-10">
+        {/* 2. Midground Integrated Cloud Layer (TEMPORARILY COMMENTED OUT)
+        <div
+          className="max-md:hidden absolute inset-0 pointer-events-none mix-blend-multiply select-none z-0"
+          style={{
+            transform: `translate3d(${offset.x * 22}px, ${offset.y * 22}px, 0)`,
+          }}
+        >
+          <div className="absolute -top-[20%] left-[20%] w-[70vw] h-[60vh] transform rotate-[165deg] scale-y-[-1]">
+            <Image
+              src="/cloud.png"
+              alt="Top-Left Cloud"
+              fill
+              priority
+              className="object-contain object-top-left"
+            />
+          </div>
+
+          <div className="absolute top-[22%] -left-[15%] w-[65vw] h-[55vh] transform -rotate-[15deg]">
+            <Image
+              src="/cloud.png"
+              alt="Mid-Left Cloud"
+              fill
+              className="object-contain object-left"
+            />
+          </div>
+
+          <div className="absolute -bottom-[8%] -right-[8%] w-[85vw] h-[70vh] transform -rotate-[12deg] scale-x-[-1]">
+            <Image
+              src="/cloud.png"
+              alt="Bottom-Right Cloud"
+              fill
+              className="object-contain object-bottom-right"
+            />
+          </div>
+
+          <div className="absolute -bottom-[50%] -left-[10%] w-[60vw] h-[50vh] transform rotate-[25deg]">
+            <Image
+              src="/cloud.png"
+              alt="Bottom-Left Cloud"
+              fill
+              className="object-contain object-bottom-left"
+            />
+          </div>
+        </div>
+        */}
 
       {/* 3. Three.js 3D Textured Planets Canvas (TEMPORARILY ON STANDBY) */}
       {/* <PlanetsCanvas mouseX={offset.x} mouseY={offset.y} /> */}
@@ -298,5 +302,7 @@ export default function Home() {
         />
       </div>
     </main>
+    <Footer />
+  </div>
   );
 }
