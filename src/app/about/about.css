@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+/* Typography for About Page */
+.font-audiowide {
+  font-family: 'Audiowide', cursive, sans-serif;
+}
+
+.audiowide-regular {
+  font-family: 'Audiowide', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.audiowide-regular .hologram-word,
+.audiowide-regular .hologram-base,
+.audiowide-regular .hologram-prism {
+  font-family: 'Audiowide', sans-serif !important;
+}
+
+.font-orbitron {
+  font-family: 'Orbitron', sans-serif;
+}
+
+/* =========================================================================
+   HOLOGRAPHIC PRISMATIC TEXT EFFECT (BORDERLESS / ZERO CONTAINERS)
+   ========================================================================= */
+
+.hologram-word {
+  position: relative;
+  display: inline-block;
+  cursor: default;
+  user-select: none;
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: transform;
+}
+
+.hologram-base {
+  display: inline-block;
+  color: rgba(226, 232, 240, 0.88);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.hologram-word.hologram-active {
+  transform: translateY(-3.5px) scale(1.05);
+  z-index: 30;
+}
+
+.hologram-word.hologram-active .hologram-base {
+  color: #ffffff;
+  text-shadow:
+    -2px 0 8px rgba(0, 240, 255, 0.9),
+    2px 0 8px rgba(251, 191, 36, 0.9),
+    0 0 16px rgba(255, 255, 255, 0.95),
+    0 2px 4px #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000;
+}
+
+/* Chromatic Prism Flare Overlay (Cyan to Gold Starlight Split) */
+.hologram-prism {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  color: transparent;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 240, 255, 0.95) 25%,
+    #ffffff 50%,
+    rgba(251, 191, 36, 0.95) 75%,
+    transparent 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(-2px 0 6px #00f0ff) drop-shadow(2px 0 6px #fbbf24) drop-shadow(0 0 14px #ffffff);
+  pointer-events: none;
+}
+
+.hologram-word.hologram-active .hologram-prism {
+  animation: prismFlareKeyframes 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes prismFlareKeyframes {
+  0% {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  25% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    clip-path: inset(0 0 0 100%);
+  }
+}
