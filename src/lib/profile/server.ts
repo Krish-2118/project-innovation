@@ -46,7 +46,10 @@ export async function getAuthenticatedProfile(): Promise<{
         profile: null,
         email: user.email ?? null,
         userId: user.id,
-        error: fetchError.message,
+        error:
+          process.env.NODE_ENV === "production"
+            ? "Unable to load profile data."
+            : fetchError.message,
       };
     }
 
@@ -85,7 +88,10 @@ export async function getAuthenticatedProfile(): Promise<{
         profile: null,
         email: user.email ?? null,
         userId: user.id,
-        error: insertError.message,
+        error:
+          process.env.NODE_ENV === "production"
+            ? "Unable to initialize profile record."
+            : insertError.message,
       };
     }
 
@@ -96,7 +102,12 @@ export async function getAuthenticatedProfile(): Promise<{
       error: null,
     };
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "Unexpected server error";
+    const msg =
+      process.env.NODE_ENV === "production"
+        ? "Unexpected server error."
+        : err instanceof Error
+        ? err.message
+        : "Unexpected server error";
     return { profile: null, email: null, userId: null, error: msg };
   }
 }
@@ -141,7 +152,14 @@ export async function updateAuthenticatedProfile(input: UserProfileUpdateInput):
       .single();
 
     if (updateError) {
-      return { success: false, profile: null, error: updateError.message };
+      return {
+        success: false,
+        profile: null,
+        error:
+          process.env.NODE_ENV === "production"
+            ? "Unable to update profile. Please verify your inputs."
+            : updateError.message,
+      };
     }
 
     return {
@@ -150,7 +168,12 @@ export async function updateAuthenticatedProfile(input: UserProfileUpdateInput):
       error: null,
     };
   } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : "Failed to update profile";
+    const msg =
+      process.env.NODE_ENV === "production"
+        ? "Failed to update profile."
+        : err instanceof Error
+        ? err.message
+        : "Failed to update profile";
     return { success: false, profile: null, error: msg };
   }
 }

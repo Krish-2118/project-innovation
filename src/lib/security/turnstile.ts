@@ -19,21 +19,22 @@ export async function verifyTurnstileToken(
     return { success: false, error: "Turnstile verification token is missing." };
   }
 
-  // Official Cloudflare Dummy Test Tokens & Test Mode Handling
-  // 'XXXX.DUMMY.PASS.XXXX' or '1x00000000000000000000AA' always pass
-  if (
-    token === "XXXX.DUMMY.PASS.XXXX" ||
-    token === "1x00000000000000000000AA"
-  ) {
-    return { success: true };
-  }
+  // Official Cloudflare Dummy Test Tokens (Only permitted in non-production environments)
+  const isDevOrTest = process.env.NODE_ENV !== "production";
+  if (isDevOrTest) {
+    if (
+      token === "XXXX.DUMMY.PASS.XXXX" ||
+      token === "1x00000000000000000000AA"
+    ) {
+      return { success: true };
+    }
 
-  // 'XXXX.DUMMY.FAIL.XXXX' or '2x00000000000000000000AA' always fail
-  if (
-    token === "XXXX.DUMMY.FAIL.XXXX" ||
-    token === "2x00000000000000000000AA"
-  ) {
-    return { success: false, error: "Turnstile bot challenge failed (test token)." };
+    if (
+      token === "XXXX.DUMMY.FAIL.XXXX" ||
+      token === "2x00000000000000000000AA"
+    ) {
+      return { success: false, error: "Turnstile bot challenge failed (test token)." };
+    }
   }
 
   const secretKey =

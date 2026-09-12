@@ -68,7 +68,11 @@ CREATE TRIGGER set_profiles_updated_at
 -- 6. Trigger to automatically create a profile entry whenever a new user
 -- signs up via Google OAuth or Email OTP
 CREATE OR REPLACE FUNCTION public.handle_new_user()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
 BEGIN
   INSERT INTO public.profiles (id, full_name)
   VALUES (
@@ -82,7 +86,7 @@ BEGIN
   ON CONFLICT (id) DO NOTHING;
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$;
 
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created

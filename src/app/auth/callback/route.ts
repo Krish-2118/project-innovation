@@ -9,6 +9,8 @@ export async function GET(request: Request) {
 
   // Sanitize redirect target to prevent open redirect vulnerabilities
   const safeNext = sanitizeRedirectUrl(next);
+  // Default to home page ("/") after login; preserve redirect only for specific event registrations
+  const finalRedirect = safeNext.startsWith("/register/") ? safeNext : "/";
 
   if (code) {
     try {
@@ -20,11 +22,11 @@ export async function GET(request: Request) {
         const isLocalEnv = process.env.NODE_ENV === "development";
 
         if (isLocalEnv) {
-          return NextResponse.redirect(`${origin}${safeNext}`);
+          return NextResponse.redirect(`${origin}${finalRedirect}`);
         } else if (forwardedHost) {
-          return NextResponse.redirect(`https://${forwardedHost}${safeNext}`);
+          return NextResponse.redirect(`https://${forwardedHost}${finalRedirect}`);
         } else {
-          return NextResponse.redirect(`${origin}${safeNext}`);
+          return NextResponse.redirect(`${origin}${finalRedirect}`);
         }
       }
     } catch (err) {

@@ -2,8 +2,19 @@ import { createClient } from "@/lib/supabase/server";
 
 export type UserRole = "participant" | "volunteer" | "admin";
 
+function isConfiguredAdminEmail(email?: string): boolean {
+  if (!email) return false;
+  const adminEmails = process.env.ADMIN_EMAILS || "";
+  const list = adminEmails
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+  return list.includes(email.toLowerCase());
+}
+
 /**
- * Retrieves the security role of a user from user_roles or metadata.
+ * Retrieves the security role of a user from user_roles, app_metadata, or admin email allowlist.
+ * STRICT SECURITY: NEVER trusts user_metadata as it is client-writable in Supabase.
  * Defaults to 'participant'.
  */
 export async function getUserRole(userId: string): Promise<UserRole> {
@@ -23,15 +34,18 @@ export async function getUserRole(userId: string): Promise<UserRole> {
       return roleRecord.role as UserRole;
     }
 
-    // 2. Check auth metadata
+    // 2. Check auth server-verified user
     const { data: { user } } = await supabase.auth.getUser();
     if (user && user.id === userId) {
-      const metaRole =
-        (user.app_metadata?.role as string) ||
-        (user.user_metadata?.role as string);
+      // Check admin email allowlist
+      if (isConfiguredAdminEmail(user.email)) {
+        return "admin";
+      }
 
-      if (metaRole === "admin" || metaRole === "volunteer") {
-        return metaRole;
+      // Check app_metadata (secure, read-only to clients)
+      const appRole = user.app_metadata?.role as string;
+      if (appRole === "admin" || appRole === "volunteer") {
+        return appRole as UserRole;
       }
     }
 

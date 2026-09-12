@@ -68,14 +68,26 @@ export async function requireAuth(): Promise<{
   return { user, supabase };
 }
 
+function isConfiguredAdminEmail(email?: string): boolean {
+  if (!email) return false;
+  const adminEmails = process.env.ADMIN_EMAILS || "";
+  const list = adminEmails
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+  return list.includes(email.toLowerCase());
+}
+
 /**
  * Checks if a given user has administrative privileges.
- * Supports Supabase app_metadata.role and user_metadata.role.
+ * STRICT SECURITY: Verifies app_metadata.role or ADMIN_EMAILS allowlist.
+ * NEVER trusts user_metadata.role because user_metadata is client-writable in Supabase.
  */
 export function checkIsAdmin(user: User): boolean {
+  if (!user) return false;
   return (
     user.app_metadata?.role === "admin" ||
-    user.user_metadata?.role === "admin"
+    isConfiguredAdminEmail(user.email)
   );
 }
 

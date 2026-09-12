@@ -162,7 +162,7 @@ export default function ProfilePage() {
             Please authenticate to view or update your INNOVISION profile.
           </p>
           <Link
-            href="/login?redirect=/profile"
+            href="/login"
             className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold text-xs tracking-widest uppercase hover:brightness-110 transition-all shadow-[0_0_20px_rgba(245,158,11,0.35)]"
           >
             Go to Login

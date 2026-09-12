@@ -19,6 +19,7 @@ CREATE OR REPLACE FUNCTION public.get_user_role(p_user_id UUID)
 RETURNS TEXT
 LANGUAGE sql
 SECURITY DEFINER
+SET search_path = public
 STABLE
 AS $$
   SELECT COALESCE(
@@ -31,6 +32,7 @@ CREATE OR REPLACE FUNCTION public.is_admin(p_user_id UUID)
 RETURNS BOOLEAN
 LANGUAGE sql
 SECURITY DEFINER
+SET search_path = public
 STABLE
 AS $$
   SELECT (public.get_user_role(p_user_id) = 'admin');
@@ -40,10 +42,22 @@ CREATE OR REPLACE FUNCTION public.is_volunteer_or_admin(p_user_id UUID)
 RETURNS BOOLEAN
 LANGUAGE sql
 SECURITY DEFINER
+SET search_path = public
 STABLE
 AS $$
   SELECT (public.get_user_role(p_user_id) IN ('volunteer', 'admin'));
 $$;
+
+-- Explicit RLS Policies for user_roles (defined after functions)
+DROP POLICY IF EXISTS "Users can read own role" ON public.user_roles;
+CREATE POLICY "Users can read own role"
+  ON public.user_roles FOR SELECT
+  USING (auth.uid() = user_id OR public.is_admin(auth.uid()));
+
+DROP POLICY IF EXISTS "Only admins can modify user roles" ON public.user_roles;
+CREATE POLICY "Only admins can modify user roles"
+  ON public.user_roles FOR ALL
+  USING (public.is_admin(auth.uid()));
 
 -- 2. EVENTS TABLE
 CREATE TABLE IF NOT EXISTS public.events (
@@ -175,12 +189,23 @@ CREATE OR REPLACE FUNCTION public.register_for_event(
 RETURNS JSONB
 LANGUAGE plpgsql
 SECURITY DEFINER
+SET search_path = public
 AS $$
 DECLARE
   v_registration_id UUID;
   v_event_record RECORD;
   v_new_event_reg_id UUID;
 BEGIN
+  -- Defense-in-depth: Caller must be registering for themselves or be an administrator
+  IF auth.uid() IS NOT NULL AND p_user_id <> auth.uid() AND NOT public.is_admin(auth.uid()) THEN
+    RETURN jsonb_build_object(
+      'success', false,
+      'status_code', 403,
+      'error_code', 'FORBIDDEN',
+      'message', 'Cannot register on behalf of another user.'
+    );
+  END IF;
+
   -- Step 1: Ensure/Fetch the user's primary registration record
   SELECT id INTO v_registration_id
   FROM public.registrations

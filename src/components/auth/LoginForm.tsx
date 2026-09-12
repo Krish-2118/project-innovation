@@ -48,7 +48,9 @@ export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const rawRedirect = searchParams.get("redirect") || searchParams.get("next");
-  const targetRedirect = sanitizeRedirectUrl(rawRedirect);
+  const sanitized = sanitizeRedirectUrl(rawRedirect);
+  // Default to home page ("/") after login; preserve redirect only for specific event registrations
+  const targetRedirect = sanitized.startsWith("/register/") ? sanitized : "/";
 
   const {
     user,

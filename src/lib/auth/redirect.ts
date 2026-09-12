@@ -84,5 +84,6 @@ export function isAuthenticatedPath(pathname: string): boolean {
 export function isProtectedApiPath(pathname: string): boolean {
   if (pathname.startsWith("/api/admin")) return true;
   if (pathname === "/api/register" || pathname.startsWith("/api/register/")) return true;
+  if (pathname === "/api/attendance" || pathname.startsWith("/api/attendance/")) return true;
   return false;
 }
