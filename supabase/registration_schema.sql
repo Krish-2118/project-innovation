@@ -180,8 +180,10 @@ CREATE POLICY "Only admins can modify attendance"
   USING (public.is_admin(auth.uid()));
 
 -- 6. ATOMIC STORED PROCEDURE: register_for_event (Concurrency & Capacity Safe)
+-- Drops previous signature if existing
+DROP FUNCTION IF EXISTS public.register_for_event(UUID, UUID, TEXT, TEXT);
+
 CREATE OR REPLACE FUNCTION public.register_for_event(
-  p_user_id UUID,
   p_event_id UUID,
   p_registration_code TEXT,
   p_qr_payload TEXT
@@ -192,28 +194,30 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 DECLARE
+  v_user_id UUID;
   v_registration_id UUID;
   v_event_record RECORD;
   v_new_event_reg_id UUID;
 BEGIN
-  -- Defense-in-depth: Caller must be registering for themselves or be an administrator
-  IF auth.uid() IS NOT NULL AND p_user_id <> auth.uid() AND NOT public.is_admin(auth.uid()) THEN
+  -- 1. STRICT AUTHENTICATION ENFORCEMENT: auth.uid() MUST NOT BE NULL
+  v_user_id := auth.uid();
+  IF v_user_id IS NULL THEN
     RETURN jsonb_build_object(
       'success', false,
-      'status_code', 403,
-      'error_code', 'FORBIDDEN',
-      'message', 'Cannot register on behalf of another user.'
+      'status_code', 401,
+      'error_code', 'UNAUTHORIZED',
+      'message', 'Authentication required. An active authenticated Supabase session is required.'
     );
   END IF;
 
-  -- Step 1: Ensure/Fetch the user's primary registration record
+  -- Step 1: Ensure/Fetch the authenticated user's primary registration record
   SELECT id INTO v_registration_id
   FROM public.registrations
-  WHERE user_id = p_user_id;
+  WHERE user_id = v_user_id;
 
   IF v_registration_id IS NULL THEN
     INSERT INTO public.registrations (user_id, registration_code, qr_payload)
-    VALUES (p_user_id, p_registration_code, p_qr_payload)
+    VALUES (v_user_id, p_registration_code, p_qr_payload)
     RETURNING id INTO v_registration_id;
   END IF;
 
@@ -257,7 +261,7 @@ BEGIN
 
   -- Step 4: Atomic insertion into event_registrations
   INSERT INTO public.event_registrations (registration_id, user_id, event_id, status)
-  VALUES (v_registration_id, p_user_id, p_event_id, 'registered')
+  VALUES (v_registration_id, v_user_id, p_event_id, 'registered')
   RETURNING id INTO v_new_event_reg_id;
 
   -- Step 5: Atomically increment registered_count
@@ -292,3 +296,10 @@ EXCEPTION
     );
 END;
 $$;
+
+-- 7. RESTRICT EXECUTE PERMISSIONS (Security Definer Hardening)
+-- Revoke execution from public and anonymous callers; allow only authenticated users & service role
+REVOKE EXECUTE ON FUNCTION public.register_for_event(UUID, TEXT, TEXT) FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.register_for_event(UUID, TEXT, TEXT) FROM anon;
+GRANT EXECUTE ON FUNCTION public.register_for_event(UUID, TEXT, TEXT) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.register_for_event(UUID, TEXT, TEXT) TO service_role;

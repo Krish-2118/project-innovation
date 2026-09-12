@@ -231,6 +231,7 @@ export default function ProfilePage() {
                 onClick={async () => {
                   await signOut();
                   router.push("/");
+                  router.refresh();
                 }}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-red-500/30 bg-red-500/10 text-red-300 text-xs uppercase tracking-wider font-semibold hover:bg-red-500/20 transition-all cursor-pointer"
               >

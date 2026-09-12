@@ -6,9 +6,7 @@ import {
   CheckCircle2,
   AlertCircle,
   Loader2,
-  Ticket,
   ShieldCheck,
-  QrCode,
   ArrowRight,
   Sparkles,
 } from "lucide-react";
@@ -20,10 +18,7 @@ interface EventRegistrationFormProps {
 }
 
 interface RegistrationSuccessData {
-  registrationCode: string;
-  qrPayload: string;
   eventTitle: string;
-  registeredAt: string;
 }
 
 export default function EventRegistrationForm({
@@ -61,7 +56,7 @@ export default function EventRegistrationForm({
       if (!response.ok || !data.success) {
         setError(data.error || "Registration failed. Please try again.");
       } else {
-        setSuccessData(data.ticket);
+        setSuccessData({ eventTitle });
       }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "A network connection error occurred.");
@@ -91,40 +86,7 @@ export default function EventRegistrationForm({
           </p>
         </div>
 
-        {/* Server-Generated Code & Opaque QR Card */}
-        <div className="p-5 rounded-2xl bg-slate-950/80 border border-amber-500/30 space-y-4">
-          <div className="space-y-1">
-            <span className="text-[10px] uppercase tracking-widest text-slate-400">
-              Unique Server Registration Code
-            </span>
-            <div className="text-xl sm:text-2xl font-mono font-bold text-amber-300 tracking-wider">
-              {successData.registrationCode}
-            </div>
-          </div>
-
-          <div className="p-3 rounded-xl bg-slate-900/60 border border-white/5 flex items-center justify-between text-xs">
-            <span className="text-slate-400">Security Verification:</span>
-            <span className="font-mono text-[11px] text-teal-300">Turnstile Bot-Verified</span>
-          </div>
-
-          <div className="flex flex-col items-center justify-center space-y-2 pt-2">
-            <div className="w-28 h-28 rounded-xl bg-white p-2.5 flex items-center justify-center shadow-[0_0_15px_rgba(251,191,36,0.2)]">
-              <QrCode className="w-full h-full text-slate-950" />
-            </div>
-            <span className="text-[9px] font-mono text-slate-400 uppercase tracking-widest">
-              Opaque QR Token: Zero PII Encoded
-            </span>
-          </div>
-        </div>
-
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-          <Link
-            href="/ticket"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold text-xs tracking-widest uppercase hover:brightness-110 transition-all shadow-[0_0_20px_rgba(245,158,11,0.35)]"
-          >
-            <Ticket className="w-4 h-4" />
-            <span>View Full Pass</span>
-          </Link>
           <Link
             href="/dashboard"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-full border border-white/10 hover:bg-white/10 text-white text-xs uppercase tracking-widest font-semibold transition-all"

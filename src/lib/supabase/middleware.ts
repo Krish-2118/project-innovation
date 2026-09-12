@@ -3,7 +3,6 @@ import { NextResponse, type NextRequest } from "next/server";
 import {
   sanitizeRedirectUrl,
   isAuthenticatedPath,
-  isAdminPath,
   isProtectedApiPath,
 } from "@/lib/auth/redirect";
 
@@ -85,49 +84,17 @@ export async function updateSession(request: NextRequest) {
     }
 
     // Protected web pages -> Redirect to /login
-    if (isAuthenticatedPath(pathname) || isAdminPath(pathname)) {
+    if (isAuthenticatedPath(pathname)) {
       const loginUrl = new URL("/login", request.url);
-      // Only preserve redirect for specific event registrations (e.g. /register/hacknitr)
-      if (pathname.startsWith("/register/")) {
-        const fullTarget = sanitizeRedirectUrl(`${pathname}${search}`);
+      const fullTarget = sanitizeRedirectUrl(`${pathname}${search}`);
+      if (fullTarget && fullTarget !== "/") {
         loginUrl.searchParams.set("redirect", fullTarget);
       }
       return withCookies(NextResponse.redirect(loginUrl));
     }
   }
 
-  // Case 2: Authenticated request to Admin route -> Check admin role
-  if (user && isAdminPath(pathname)) {
-    const adminEmails = process.env.ADMIN_EMAILS || "";
-    const isEmailAdmin = Boolean(
-      user.email &&
-      adminEmails
-        .split(",")
-        .map((e) => e.trim().toLowerCase())
-        .filter(Boolean)
-        .includes(user.email.toLowerCase())
-    );
-    const isAdmin = user.app_metadata?.role === "admin" || isEmailAdmin;
 
-    if (!isAdmin) {
-      if (pathname.startsWith("/api/")) {
-        return withCookies(
-          NextResponse.json(
-            {
-              error: "Forbidden: Administrator privileges required",
-              role: user.app_metadata?.role || "user",
-            },
-            { status: 403 }
-          )
-        );
-      }
-
-      // Web page: redirect non-admin to dashboard with informative query
-      const forbiddenRedirect = new URL("/dashboard", request.url);
-      forbiddenRedirect.searchParams.set("error", "admin_required");
-      return withCookies(NextResponse.redirect(forbiddenRedirect));
-    }
-  }
 
   return supabaseResponse;
 }

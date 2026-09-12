@@ -3,6 +3,12 @@
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type { User, Session, AuthError } from "@supabase/supabase-js";
+import {
+  signInWithGoogle as clientSignInWithGoogle,
+  signInWithEmailOtp as clientSignInWithEmailOtp,
+  verifyEmailOtp as clientVerifyEmailOtp,
+  signOutUser,
+} from "@/lib/auth/client";
 
 interface UseAuthReturn {
   user: User | null;
@@ -82,24 +88,7 @@ export function useAuth(): UseAuthReturn {
    */
   const signInWithGoogle = useCallback(
     async (redirectTo?: string): Promise<{ error: AuthError | null }> => {
-      try {
-        const supabase = createClient();
-        const origin = typeof window !== "undefined" ? window.location.origin : "";
-        const targetRedirect = redirectTo
-          ? `${origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`
-          : `${origin}/auth/callback`;
-
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: "google",
-          options: {
-            redirectTo: targetRedirect,
-          },
-        });
-
-        return { error };
-      } catch (err) {
-        return { error: err as AuthError };
-      }
+      return await clientSignInWithGoogle(redirectTo);
     },
     []
   );
@@ -109,25 +98,7 @@ export function useAuth(): UseAuthReturn {
    */
   const signInWithEmailOtp = useCallback(
     async (email: string, redirectTo?: string): Promise<{ error: AuthError | null }> => {
-      try {
-        const supabase = createClient();
-        const origin = typeof window !== "undefined" ? window.location.origin : "";
-        const targetRedirect = redirectTo
-          ? `${origin}/auth/callback?next=${encodeURIComponent(redirectTo)}`
-          : `${origin}/auth/callback`;
-
-        const { error } = await supabase.auth.signInWithOtp({
-          email,
-          options: {
-            emailRedirectTo: targetRedirect,
-            shouldCreateUser: true,
-          },
-        });
-
-        return { error };
-      } catch (err) {
-        return { error: err as AuthError };
-      }
+      return await clientSignInWithEmailOtp(email, redirectTo);
     },
     []
   );
@@ -140,23 +111,14 @@ export function useAuth(): UseAuthReturn {
       email: string,
       token: string
     ): Promise<{ session: Session | null; user: User | null; error: AuthError | null }> => {
-      try {
-        const supabase = createClient();
-        const { data, error } = await supabase.auth.verifyOtp({
-          email,
-          token,
-          type: "email",
-        });
+      const { session: newSession, user: newUser, error } = await clientVerifyEmailOtp(email, token);
 
-        if (!error && data?.session) {
-          setSession(data.session);
-          setUser(data.user);
-        }
-
-        return { session: data?.session ?? null, user: data?.user ?? null, error };
-      } catch (err) {
-        return { session: null, user: null, error: err as AuthError };
+      if (!error && newSession) {
+        setSession(newSession);
+        setUser(newUser);
       }
+
+      return { session: newSession, user: newUser, error };
     },
     []
   );
@@ -165,17 +127,12 @@ export function useAuth(): UseAuthReturn {
    * Signs out the user and clears session tokens.
    */
   const signOut = useCallback(async (): Promise<{ error: AuthError | null }> => {
-    try {
-      const supabase = createClient();
-      const { error } = await supabase.auth.signOut();
-      if (!error) {
-        setUser(null);
-        setSession(null);
-      }
-      return { error };
-    } catch (err) {
-      return { error: err as AuthError };
+    const { error } = await signOutUser();
+    if (!error) {
+      setUser(null);
+      setSession(null);
     }
+    return { error };
   }, []);
 
   return {

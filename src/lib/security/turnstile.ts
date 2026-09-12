@@ -37,8 +37,21 @@ export async function verifyTurnstileToken(
     }
   }
 
-  const secretKey =
-    process.env.TURNSTILE_SECRET_KEY || "1x0000000000000000000000000000000AA"; // Default to Cloudflare official pass-all test secret
+  // Cloudflare Turnstile secret key validation
+  const configuredSecret = process.env.TURNSTILE_SECRET_KEY;
+  if (!configuredSecret) {
+    if (!isDevOrTest) {
+      console.error("CRITICAL SECURITY ERROR: TURNSTILE_SECRET_KEY is not configured in production. Failing closed.");
+      return {
+        success: false,
+        error: "Turnstile bot verification configuration is missing.",
+      };
+    }
+    // Only in non-production environments without an explicit secret, allow Cloudflare official pass-all test secret
+    console.warn("WARNING: Using Cloudflare Turnstile test secret in development/test environment.");
+  }
+
+  const secretKey = configuredSecret || "1x0000000000000000000000000000000AA";
 
   try {
     const formData = new URLSearchParams();

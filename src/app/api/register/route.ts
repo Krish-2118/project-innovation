@@ -110,153 +110,43 @@ export async function POST(request: Request) {
     const qrPayload = generateOpaqueQrPayload(authenticatedUserId, registrationCode);
 
     // 8. EXECUTE ATOMIC TRANSACTION VIA STORED PROCEDURE: register_for_event
-    // Handles row-level lock (FOR UPDATE), capacity verification, and duplicate check atomically
+    // Concurrency-safe: derives user from auth.uid(), locks event row FOR UPDATE, and enforces capacity & unique constraints atomically
     const { data: rpcResult, error: rpcError } = await supabase.rpc(
       "register_for_event",
       {
-        p_user_id: authenticatedUserId,
         p_event_id: eventRecord.id,
         p_registration_code: registrationCode,
         p_qr_payload: qrPayload,
       }
     );
 
-    // If stored procedure succeeded
-    if (!rpcError && rpcResult) {
-      const statusCode = rpcResult.status_code || (rpcResult.success ? 201 : 409);
-      if (!rpcResult.success) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: rpcResult.message,
-            errorCode: rpcResult.error_code,
-          },
-          { status: statusCode }
-        );
-      }
-
-      return NextResponse.json(
-        {
-          success: true,
-          message: `Successfully registered for ${rpcResult.event_title || eventRecord.title}`,
-          ticket: {
-            registrationCode: rpcResult.registration_code || registrationCode,
-            qrPayload: rpcResult.qr_payload || qrPayload, // Opaque, strictly contains ZERO PII
-            eventId: eventRecord.id,
-            eventTitle: eventRecord.title,
-            registeredAt: new Date().toISOString(),
-          },
-        },
-        { status: 201 }
-      );
-    }
-
-    // 9. RESILIENT FALLBACK: If RPC is not yet created in DB, execute direct transactional query
-    // Check direct capacity
-    if (eventRecord.registered_count >= eventRecord.capacity) {
+    if (rpcError || !rpcResult) {
+      console.error("register_for_event RPC failed:", rpcError);
       return NextResponse.json(
         {
           success: false,
-          error: "Registration closed: event has reached maximum capacity.",
-          errorCode: "EVENT_FULL",
+          error: "An error occurred while processing registration. Please try again.",
         },
-        { status: 409 }
-      );
-    }
-
-    // Ensure primary registration
-    let regId: string;
-    const { data: existingReg } = await supabase
-      .from("registrations")
-      .select("id, registration_code, qr_payload")
-      .eq("user_id", authenticatedUserId)
-      .maybeSingle();
-
-    if (existingReg) {
-      regId = existingReg.id;
-    } else {
-      const { data: newReg, error: regInsertErr } = await supabase
-        .from("registrations")
-        .insert({
-          user_id: authenticatedUserId,
-          registration_code: registrationCode,
-          qr_payload: qrPayload,
-        })
-        .select("id, registration_code, qr_payload")
-        .single();
-
-      if (regInsertErr) {
-        return NextResponse.json(
-          { success: false, error: "Failed to initialize registration record." },
-          { status: 500 }
-        );
-      }
-      regId = newReg.id;
-    }
-
-    // Check duplicate
-    const { data: duplicateCheck } = await supabase
-      .from("event_registrations")
-      .select("id")
-      .eq("registration_id", regId)
-      .eq("event_id", eventRecord.id)
-      .maybeSingle();
-
-    if (duplicateCheck) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "You are already registered for this event.",
-          errorCode: "DUPLICATE_REGISTRATION",
-        },
-        { status: 409 }
-      );
-    }
-
-    // Insert event_registration
-    const { error: eventRegErr } = await supabase
-      .from("event_registrations")
-      .insert({
-        registration_id: regId,
-        user_id: authenticatedUserId,
-        event_id: eventRecord.id,
-      });
-
-    if (eventRegErr) {
-      if (eventRegErr.code === "23505") {
-        // PostgreSQL unique violation
-        return NextResponse.json(
-          {
-            success: false,
-            error: "You are already registered for this event.",
-            errorCode: "DUPLICATE_REGISTRATION",
-          },
-          { status: 409 }
-        );
-      }
-      return NextResponse.json(
-        { success: false, error: "Could not record event registration." },
         { status: 500 }
       );
     }
 
-    // Increment count
-    await supabase
-      .from("events")
-      .update({ registered_count: eventRecord.registered_count + 1 })
-      .eq("id", eventRecord.id);
+    const statusCode = rpcResult.status_code || (rpcResult.success ? 201 : 409);
+    if (!rpcResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: rpcResult.message,
+          errorCode: rpcResult.error_code,
+        },
+        { status: statusCode }
+      );
+    }
 
     return NextResponse.json(
       {
         success: true,
-        message: `Successfully registered for ${eventRecord.title}`,
-        ticket: {
-          registrationCode,
-          qrPayload, // Opaque, no PII
-          eventId: eventRecord.id,
-          eventTitle: eventRecord.title,
-          registeredAt: new Date().toISOString(),
-        },
+        message: `Successfully registered for ${rpcResult.event_title || eventRecord.title}`,
       },
       { status: 201 }
     );

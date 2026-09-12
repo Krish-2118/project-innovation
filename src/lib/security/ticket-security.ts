@@ -7,7 +7,21 @@ import crypto from "crypto";
  * 2. QR codes contain strictly ZERO personally identifiable information (PII).
  */
 
-const SALT = process.env.TICKET_SECURITY_SALT || "inno_celestial_secret_salt_2026";
+function getTicketSecuritySalt(): string {
+  const salt = process.env.TICKET_SECURITY_SALT;
+  if (!salt || salt.trim() === "") {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "CRITICAL SECURITY ERROR: TICKET_SECURITY_SALT environment variable must be configured in production."
+      );
+    }
+    console.warn(
+      "WARNING: TICKET_SECURITY_SALT is not configured. Using development fallback secret."
+    );
+    return "inno_dev_ephemeral_salt_fallback_not_for_production";
+  }
+  return salt;
+}
 
 /**
  * Generates a cryptographically random, unique registration code.
@@ -36,8 +50,9 @@ export function generateRegistrationCode(): string {
  * Format: "inno:v1:tkt_<64_char_hex_hmac>"
  */
 export function generateOpaqueQrPayload(userId: string, registrationCode: string): string {
+  const salt = getTicketSecuritySalt();
   const rawData = `usr:${userId}|code:${registrationCode}`;
-  const hmac = crypto.createHmac("sha256", SALT).update(rawData).digest("hex");
+  const hmac = crypto.createHmac("sha256", salt).update(rawData).digest("hex");
   return `inno:v1:tkt_${hmac}`;
 }
 

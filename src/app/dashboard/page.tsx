@@ -3,7 +3,6 @@ import { getCurrentUser } from "@/lib/auth/server";
 import {
   Sparkles,
   ArrowLeft,
-  Ticket,
   UserCheck,
   Calendar,
   Shield,
@@ -57,7 +56,7 @@ export default async function DashboardPage() {
             </div>
 
             {/* Quick Actions Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
               {/* Profile */}
               <Link
                 href="/profile"
@@ -98,28 +97,6 @@ export default async function DashboardPage() {
                 </div>
                 <div className="flex items-center text-[11px] font-semibold tracking-wider text-teal-300 uppercase gap-1">
                   <span>View Registrations</span>
-                  <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </Link>
-
-              {/* Digital Pass / Ticket */}
-              <Link
-                href="/ticket"
-                className="group p-5 rounded-2xl bg-slate-950/70 border border-white/10 hover:border-amber-400/50 transition-all duration-300 flex flex-col justify-between space-y-4 hover:shadow-[0_0_20px_rgba(251,191,36,0.15)]"
-              >
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-300 group-hover:scale-105 transition-transform">
-                  <Ticket className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-amber-100 font-serif tracking-wider">
-                    Digital Pass
-                  </h3>
-                  <p className="text-xs text-slate-400 mt-1">
-                    Access your verified celestial entry pass.
-                  </p>
-                </div>
-                <div className="flex items-center text-[11px] font-semibold tracking-wider text-amber-300 uppercase gap-1">
-                  <span>View Pass</span>
                   <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
                 </div>
               </Link>
