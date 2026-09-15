@@ -344,7 +344,7 @@ export default function AboutConstellations() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 pointer-events-none z-20 w-full h-full mix-blend-screen"
+      className="absolute inset-0 pointer-events-none z-20 w-full h-full mix-blend-screen hidden md:block"
     />
   );
 }
