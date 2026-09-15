@@ -9,7 +9,7 @@ export default function PlanetaryWaypoints() {
     <section className="relative w-full h-screen px-6 flex items-center justify-center pointer-events-auto z-30 overflow-hidden pt-12 sm:pt-14 pb-8">
       
       {/* CENTERED ABOUT US CONTENT FRAME (PROPORTIONALLY BOUNDED TO MIDDLE 47VW) */}
-      <div className="w-full max-w-[min(680px,46vw)] lg:max-w-[min(720px,47vw)] mx-auto flex flex-col items-center text-center gap-2 sm:gap-3 -mt-3 sm:-mt-5">
+      <div className="w-full max-w-[90vw] md:max-w-[min(680px,46vw)] lg:max-w-[min(720px,47vw)] mx-auto flex flex-col items-center text-center gap-2 sm:gap-3 -mt-3 sm:-mt-5">
         
         {/* 1. 3D About Us Title */}
         <div className="w-full flex justify-center">
