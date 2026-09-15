@@ -30,8 +30,8 @@ export default function AboutConstellations() {
     let nodes: Node[] = [];
     let animationFrameId: number;
 
-    const MAX_NODES = window.innerWidth < 768 ? 6 : 85; // Distributed across the 4 border perimeters
-    const LINK = window.innerWidth < 768 ? 50 : 145; // Distance to connect stars
+    const MAX_NODES = window.innerWidth < 768 ? 3 : 85; // Distributed across the 4 border perimeters
+    const LINK = window.innerWidth < 768 ? 40 : 145; // Distance to connect stars
     
     // Track pointer natively via window so it works even though canvas is pointer-events-none
     const pointer = { x: -1000, y: -1000 };
@@ -87,8 +87,12 @@ export default function AboutConstellations() {
 
     const initNodes = () => {
       nodes = [];
-      // Fixed nodes: Pinned to the 5 annotated celestial golden star positions along borders
-      FIXED_WAYPOINTS.forEach((wp) => {
+      const isMobile = window.innerWidth < 768;
+      // On mobile, only keep 3 fixed stars to drastically reduce clutter
+      const activeWaypoints = isMobile ? FIXED_WAYPOINTS.slice(0, 3) : FIXED_WAYPOINTS;
+
+      // Fixed nodes: Pinned to the annotated celestial golden star positions along borders
+      activeWaypoints.forEach((wp) => {
         const startX = wp.leftPct * width;
         const startY = wp.topPct * height;
         nodes.push({
@@ -107,7 +111,8 @@ export default function AboutConstellations() {
       });
 
       // Remaining nodes: Ambient constellation starfield strictly along borders
-      for (let i = FIXED_WAYPOINTS.length; i < MAX_NODES; i++) {
+      // On mobile, MAX_NODES is 3, so this loop won't even run.
+      for (let i = activeWaypoints.length; i < MAX_NODES; i++) {
         const pt = getRandomBorderPoint();
         nodes.push({
           x: pt.x,
