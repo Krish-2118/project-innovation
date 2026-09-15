@@ -30,8 +30,8 @@ export default function AboutConstellations() {
     let nodes: Node[] = [];
     let animationFrameId: number;
 
-    const MAX_NODES = window.innerWidth < 768 ? 45 : 85; // Distributed across the 4 border perimeters
-    const LINK = 145; // Distance to connect stars
+    const MAX_NODES = window.innerWidth < 768 ? 15 : 85; // Distributed across the 4 border perimeters
+    const LINK = window.innerWidth < 768 ? 100 : 145; // Distance to connect stars
     
     // Track pointer natively via window so it works even though canvas is pointer-events-none
     const pointer = { x: -1000, y: -1000 };
