@@ -24,7 +24,6 @@ export default function SpacecraftCursor() {
     document.documentElement.style.cursor = "none";
     document.body.style.cursor = "none";
 
-    let width = window.innerWidth;
     let height = window.innerHeight;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
