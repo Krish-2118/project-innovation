@@ -27,7 +27,7 @@ export default function FloatingAstronauts() {
 
   return (
     <div className="fixed inset-0 pointer-events-none z-25 overflow-hidden select-none">
-      {/* 1. LEFT FLOATING UFO SPACESHIP */}
+      {/* 1. LEFT FLOATING UFO SPACESHIP (Top on Mobile) */}
       <motion.div
         initial={{ opacity: 0, x: -60, scale: 0.9 }}
         animate={{
@@ -42,7 +42,7 @@ export default function FloatingAstronauts() {
           x: { duration: 0.6, ease: "easeOut" },
           y: { duration: 0.6, ease: "easeOut" },
         }}
-        className="absolute left-[2%] sm:left-[3%] lg:left-[4%] xl:left-[6%] top-[28%] sm:top-[32%] lg:top-[36%] -translate-y-1/2 w-[160px] sm:w-[190px] md:w-[230px] lg:w-[275px] xl:w-[315px] aspect-[1501/871] hidden sm:block"
+        className="absolute left-1/2 sm:left-[3%] lg:left-[4%] xl:left-[6%] top-[10%] sm:top-[32%] lg:top-[36%] -translate-x-1/2 sm:translate-x-0 sm:-translate-y-1/2 w-[140px] sm:w-[190px] md:w-[230px] lg:w-[275px] xl:w-[315px] aspect-[1501/871]"
       >
         <motion.div
           animate={{
@@ -67,7 +67,7 @@ export default function FloatingAstronauts() {
         </motion.div>
       </motion.div>
 
-      {/* 2. RIGHT WAVING ASTRONAUT */}
+      {/* 2. RIGHT WAVING ASTRONAUT (Bottom on Mobile) */}
       <motion.div
         initial={{ opacity: 0, x: 60, scale: 0.9 }}
         animate={{
@@ -82,7 +82,7 @@ export default function FloatingAstronauts() {
           x: { duration: 0.6, ease: "easeOut" },
           y: { duration: 0.6, ease: "easeOut" },
         }}
-        className="absolute right-[2%] sm:right-[3%] lg:right-[5%] xl:right-[7%] top-[28%] sm:top-[31%] lg:top-[33%] -translate-y-1/2 w-[110px] sm:w-[135px] md:w-[165px] lg:w-[195px] xl:w-[225px] aspect-[402/509] hidden sm:block"
+        className="absolute left-1/2 sm:left-auto right-auto sm:right-[3%] lg:right-[5%] xl:right-[7%] top-auto sm:top-[31%] lg:top-[33%] bottom-[8%] sm:bottom-auto -translate-x-1/2 sm:translate-x-0 sm:-translate-y-1/2 w-[100px] sm:w-[135px] md:w-[165px] lg:w-[195px] xl:w-[225px] aspect-[402/509]"
       >
         <motion.div
           animate={{
@@ -101,7 +101,7 @@ export default function FloatingAstronauts() {
             alt="Cosmic Astronaut Waving in Space"
             fill
             priority
-            sizes="(max-width: 768px) 0vw, (max-width: 1200px) 340px, 390px"
+            sizes="(max-width: 768px) 100px, (max-width: 1200px) 195px, 225px"
             className="object-contain"
           />
         </motion.div>
