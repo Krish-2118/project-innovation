@@ -73,6 +73,12 @@ export default function CosmicCursorEcho() {
       const { clientX, clientY } = e;
       const { innerWidth, innerHeight } = window;
 
+      // Disable cursor echo on mobile to prevent text overlap
+      if (innerWidth < 768) {
+        if (isVisible) setIsVisible(false);
+        return;
+      }
+
       const PROXIMITY_THRESHOLD = Math.max(130, Math.min(innerWidth * 0.13, 190));
 
       let matchedWp: Waypoint | null = null;
@@ -137,7 +143,7 @@ export default function CosmicCursorEcho() {
   const isRightAligned = displayWaypoint?.id === 2 || displayWaypoint?.id === 3 || displayWaypoint?.id === 4;
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-35 overflow-hidden select-none">
+    <div className="fixed inset-0 pointer-events-none z-35 overflow-hidden select-none hidden md:block">
       <AnimatePresence>
         {isVisible && displayWaypoint && (
           <motion.div

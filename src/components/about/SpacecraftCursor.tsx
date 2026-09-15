@@ -17,6 +17,9 @@ export default function SpacecraftCursor() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    let width = window.innerWidth;
+    if (width < 768) return;
+
     // Hide default system cursor on document & body while this component is active
     document.documentElement.style.cursor = "none";
     document.body.style.cursor = "none";
