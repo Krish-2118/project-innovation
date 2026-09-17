@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
-import Cinematic3DGallery from "./Cinematic3DGallery";
+import dynamic from "next/dynamic";
+
+const Cinematic3DGallery = dynamic(() => import("./Cinematic3DGallery"), { ssr: false });
 
 export default function Gallery() {
   return <Cinematic3DGallery />;

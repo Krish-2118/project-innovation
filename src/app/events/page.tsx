@@ -1,13 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import EventCarousel from "@/components/events/EventCarousel";
-import StarConstellationCanvas from "@/components/events/StarConstellationCanvas";
+
+// Dynamically import the heavy canvas component to avoid blocking initial load
+const StarConstellationCanvas = dynamic(
+  () => import("@/components/events/StarConstellationCanvas"),
+  { ssr: false }
+);
 
 export default function EventsPage() {
   const mouseRef = useRef({ targetX: 0, targetY: 0, currentX: 0, currentY: 0 });
-  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const bgRef = useRef<HTMLDivElement>(null);
+  const starsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -23,20 +30,19 @@ export default function EventsPage() {
 
     let animationFrameId: number;
     const updateParallax = () => {
-      if (window.innerWidth < 768) {
-        setOffset({ x: 0, y: 0 });
-        animationFrameId = requestAnimationFrame(updateParallax);
-        return;
+      if (window.innerWidth >= 768) {
+        const m = mouseRef.current;
+        m.currentX += (m.targetX - m.currentX) * 0.08;
+        m.currentY += (m.targetY - m.currentY) * 0.08;
+
+        // Apply transforms directly to the DOM to avoid React re-renders
+        if (bgRef.current) {
+          bgRef.current.style.transform = `translate3d(${m.currentX * -12}px, ${m.currentY * -12}px, 0) scale(1.08)`;
+        }
+        if (starsRef.current) {
+          starsRef.current.style.transform = `translate3d(${m.currentX * 6}px, ${m.currentY * 6}px, 0)`;
+        }
       }
-
-      const m = mouseRef.current;
-      m.currentX += (m.targetX - m.currentX) * 0.08;
-      m.currentY += (m.targetY - m.currentY) * 0.08;
-
-      setOffset({
-        x: m.currentX,
-        y: m.currentY,
-      });
 
       animationFrameId = requestAnimationFrame(updateParallax);
     };
@@ -53,10 +59,9 @@ export default function EventsPage() {
     <main className="hero-bg relative w-full h-screen overflow-hidden bg-[#020712] text-white">
       {/* 1. Deep Space Background - Subtle smooth reverse parallax */}
       <div
+        ref={bgRef}
         className="absolute -inset-12 select-none pointer-events-none"
-        style={{
-          transform: `translate3d(${offset.x * -12}px, ${offset.y * -12}px, 0) scale(1.08)`,
-        }}
+        style={{ transform: "translate3d(0px, 0px, 0) scale(1.08)" }}
       >
         <Image
           src="/bg.png"
@@ -69,7 +74,9 @@ export default function EventsPage() {
       </div>
 
       {/* 2. Interactive Prominent Stars & User Cursor Constellation Drawer */}
-      <StarConstellationCanvas offsetX={offset.x} offsetY={offset.y} />
+      <div ref={starsRef} className="absolute inset-0 pointer-events-none">
+        <StarConstellationCanvas />
+      </div>
 
       {/* 3. Event Carousel and Interactive Content */}
       <div className="relative z-10 w-full h-full">
@@ -78,4 +85,3 @@ export default function EventsPage() {
     </main>
   );
 }
-
