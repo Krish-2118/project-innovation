@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface DustParticle {
   x: number;
@@ -32,8 +33,11 @@ interface CometInstance {
 
 export default function CosmicCometSystem() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
+    if (isMobile) return;
+    
     // Check reduced motion preference
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
@@ -293,7 +297,7 @@ export default function CosmicCometSystem() {
     };
   }, []);
 
-  return (
+  return isMobile ? null : (
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-10 w-full h-full"

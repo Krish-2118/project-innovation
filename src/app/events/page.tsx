@@ -8,7 +8,7 @@ import EventCarousel from "@/components/events/EventCarousel";
 // Dynamically import the heavy canvas component to avoid blocking initial load
 const StarConstellationCanvas = dynamic(
   () => import("@/components/events/StarConstellationCanvas"),
-  { ssr: false }
+  { ssr: false, loading: () => null }
 );
 
 export default function EventsPage() {

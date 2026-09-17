@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface Node {
   x: number;
@@ -18,8 +19,11 @@ interface Node {
 
 export default function AboutConstellations() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const isMobile = useIsMobile();
   
   useEffect(() => {
+    if (isMobile) return;
+    
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -341,7 +345,7 @@ export default function AboutConstellations() {
     };
   }, []);
 
-  return (
+  return isMobile ? null : (
     <canvas
       ref={canvasRef}
       className="absolute inset-0 pointer-events-none z-20 w-full h-full mix-blend-screen hidden md:block"

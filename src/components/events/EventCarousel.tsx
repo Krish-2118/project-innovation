@@ -99,8 +99,53 @@ export default function EventCarousel({ isActive = true }: { isActive?: boolean 
       }
     };
 
+    let touchStartY = 0;
+    let touchEndY = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      // Prevent default to disable native scrolling/bouncing on mobile
+      e.preventDefault();
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      touchEndY = e.changedTouches[0].clientY;
+      handleSwipe();
+    };
+
+    const handleSwipe = () => {
+      if (isScrollingRef.current) return;
+      const swipeDistance = touchStartY - touchEndY;
+      
+      // Swipe up (simulate scrolling down to next slide)
+      if (swipeDistance > 50) {
+        isScrollingRef.current = true;
+        paginate(1);
+        setTimeout(() => { isScrollingRef.current = false; }, 1000);
+      } 
+      // Swipe down (simulate scrolling up to previous slide)
+      else if (swipeDistance < -50) {
+        if (currentIndex === 0) return; // Allow natural scroll if at top
+        isScrollingRef.current = true;
+        paginate(-1);
+        setTimeout(() => { isScrollingRef.current = false; }, 1000);
+      }
+    };
+
     window.addEventListener("wheel", handleWheel, { passive: false });
-    return () => window.removeEventListener("wheel", handleWheel);
+    window.addEventListener("touchstart", handleTouchStart, { passive: false });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("touchend", handleTouchEnd, { passive: false });
+
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
   }, [isActive, currentIndex]);
 
   return (
