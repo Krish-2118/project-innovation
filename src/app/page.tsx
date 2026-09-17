@@ -234,7 +234,7 @@ export default function Home() {
         <div className="relative -translate-y-6 sm:-translate-y-10 w-[98vw] sm:w-[90vw] max-w-[1200px] h-[75vh] sm:h-[65vh] md:h-[75vh] lg:h-[95vh] flex items-center justify-center">
 
           {/* Celestial Subtitle Header above INNOVISION */}
-          <div className="absolute top-[40%] sm:top-[30%] md:top-[30%] lg:top-[32%] pointer-events-none z-40 flex items-center gap-3">
+          <div className="absolute top-[35%] sm:top-[30%] md:top-[30%] lg:top-[32%] pointer-events-none z-40 flex items-center gap-3">
             <span className="text-amber-300/80 text-xs sm:text-xl md:text-base font-serif drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]">✦</span>
             <h2 className="text-xs sm:text-base md:text-xl lg:text-2xl font-bold tracking-[0.4em] sm:tracking-[0.5em] uppercase font-[family-name:var(--font-cinzel)] text-amber-200 bg-[url('/celestial-text-bg-inverted.png')] bg-cover bg-center bg-clip-text text-transparent filter drop-shadow-[0_0_18px_rgba(251,191,36,0.75)] drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]">
               NIT ROURKELA&apos;S

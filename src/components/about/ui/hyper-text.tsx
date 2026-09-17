@@ -53,7 +53,7 @@ export function CosmicTitleText({
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="relative w-full h-[75px] sm:h-[95px] md:h-[120px] lg:h-[130px] aspect-[1000/296]"
+          className="relative w-full h-[75px] sm:h-[95px] md:h-[105px] lg:h-[110px] aspect-[1000/296]"
         >
           <Image
             src="/about-us-transparent.png"

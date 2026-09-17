@@ -134,7 +134,7 @@ export default function EventCarousel({ isActive = true }: { isActive?: boolean 
             </h2>
 
             {/* Title */}
-            <h1 className="text-3xl md:text-6xl lg:text-[6.8rem] whitespace-nowrap leading-[0.9] tracking-[0.08em] mb-5 drop-shadow-[0_12px_30px_rgba(0,0,0,0.85)] font-semibold" style={{ fontFamily: "var(--font-exo2), sans-serif" }}>
+            <h1 className="text-3xl md:text-6xl lg:text-[6.8rem] whitespace-normal sm:whitespace-nowrap leading-[0.9] tracking-[0.08em] mb-5 drop-shadow-[0_12px_30px_rgba(0,0,0,0.85)] font-semibold" style={{ fontFamily: "var(--font-exo2), sans-serif" }}>
               {currentEvent.title}
             </h1>
 

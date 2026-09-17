@@ -73,6 +73,12 @@ export default function CosmicCursorEcho() {
       const { clientX, clientY } = e;
       const { innerWidth, innerHeight } = window;
 
+      // Disable cursor echo on mobile to prevent text overlap
+      if (innerWidth < 768) {
+        if (isVisible) setIsVisible(false);
+        return;
+      }
+
       const PROXIMITY_THRESHOLD = Math.max(130, Math.min(innerWidth * 0.13, 190));
 
       let matchedWp: Waypoint | null = null;
@@ -137,7 +143,7 @@ export default function CosmicCursorEcho() {
   const isRightAligned = displayWaypoint?.id === 2 || displayWaypoint?.id === 3 || displayWaypoint?.id === 4;
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-35 overflow-hidden select-none">
+    <div className="fixed inset-0 pointer-events-none z-35 overflow-hidden select-none hidden md:block">
       <AnimatePresence>
         {isVisible && displayWaypoint && (
           <motion.div
@@ -182,7 +188,7 @@ export default function CosmicCursorEcho() {
             >
               <span className="w-2.5 h-2.5 rounded-full bg-[#FFE600] shadow-[0_0_12px_#FFE600,0_0_24px_#FFE600] animate-pulse shrink-0" />
               <span
-                className="text-xs sm:text-sm md:text-[14px] font-black tracking-[0.2em] uppercase font-orbitron text-[#FFE600]"
+                className="text-[10px] md:text-[11px] lg:text-[12px] font-black tracking-[0.2em] uppercase font-orbitron text-[#FFE600]"
                 style={{
                   textShadow:
                     "0 0 14px #FFE600, 0 0 28px rgba(255,230,0,0.8), 0 2px 4px #000, -1.5px -1.5px 0 #000, 1.5px -1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000",
@@ -229,7 +235,7 @@ export default function CosmicCursorEcho() {
                 delay: 0.05,
                 ease: [0.34, 1.56, 0.64, 1],
               }}
-              className="text-sm sm:text-base md:text-[17px] lg:text-[18px] font-orbitron font-bold leading-snug tracking-wide text-white"
+              className="text-[11px] md:text-[13px] lg:text-[14px] font-orbitron font-bold leading-snug tracking-wide text-white"
               style={{
                 textShadow:
                   "0 0 14px rgba(0,240,255,0.85), 0 0 28px rgba(0,240,255,0.45), 0 2px 4px #000, 0 4px 10px #000, -1.5px -1.5px 0 #000, 1.5px 1.5px 0 #000, -1.5px 1.5px 0 #000, 1.5px 1.5px 0 #000",
