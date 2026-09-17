@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import PaintSplatterIntro from "@/components/intro/PaintSplatterIntro";
 import { RocketTransitionProvider } from "@/components/transition/RocketTransitionContext";
 import Footer from "@/components/layout/Footer";
+import { usePathname } from "next/navigation";
 
 export const AudioContext = createContext({
   isPlaying: false,
@@ -12,6 +13,7 @@ export const AudioContext = createContext({
 });
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   // Global Ink-Mask & Preloader states
   const [showPreloader, setShowPreloader] = useState(true);
   const [isActive, setIsActive] = useState(false);
@@ -66,10 +68,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   // 3. Play audio on loop after intro reveal completes
   useEffect(() => {
     if (removeGif && audioRef.current) {
-      audioRef.current
-        .play()
-        .then(() => setIsPlaying(true))
-        .catch((err) => console.log("Autoplay audio waiting for user gesture:", err));
+      // Check localStorage for user preference. Default is 'muted' (off)
+      const savedPreference = localStorage.getItem("innovision_audio");
+      if (savedPreference === "playing") {
+        audioRef.current
+          .play()
+          .then(() => setIsPlaying(true))
+          .catch((err) => console.log("Autoplay audio waiting for user gesture:", err));
+      }
     }
   }, [removeGif]);
 
@@ -78,10 +84,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
+      localStorage.setItem("innovision_audio", "muted");
     } else {
       audioRef.current
         .play()
-        .then(() => setIsPlaying(true))
+        .then(() => {
+          setIsPlaying(true);
+          localStorage.setItem("innovision_audio", "playing");
+        })
         .catch(console.error);
     }
   };
@@ -108,7 +118,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           {children}
 
           {/* Global Footer */}
-          <Footer />
+          {pathname !== '/events' && <Footer />}
         </div>
       </RocketTransitionProvider>
     </AudioContext.Provider>

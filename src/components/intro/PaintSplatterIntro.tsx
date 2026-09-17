@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface PaintSplatterIntroProps {
   onStart: () => void;
@@ -23,6 +24,7 @@ export default function PaintSplatterIntro({
   onStart,
   showPreloader,
 }: PaintSplatterIntroProps) {
+  const router = useRouter();
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [stars, setStars] = useState<Star[]>([]);
 
@@ -59,15 +61,47 @@ export default function PaintSplatterIntro({
     let isMounted = true;
     const preloadAssets = async () => {
       try {
-        // Pre-fetch and parse heavy 3D chunks so mobile navigation doesn't hang later
+        // 1. Pre-fetch routes for instant navigation
+        router.prefetch("/events");
+        router.prefetch("/about");
+        router.prefetch("/gallery");
+        router.prefetch("/merch");
+
+        // 2. Pre-fetch and parse heavy 3D chunks so mobile navigation doesn't hang later
         await Promise.all([
           import("@/components/about/AboutConstellations"),
           import("@/components/about/CosmicCometSystem"),
           import("@/components/about/FloatingAstronauts"),
           import("@/components/events/StarConstellationCanvas"),
           import("@/components/Cinematic3DGallery"),
+          import("@/components/home/ConstellationsCanvas"),
+          import("@/components/events/EventGlobe"),
         ]);
         
+        // 3. Cache critical heavy images in browser memory
+        const imagesToPreload = [
+          "/bg.png",
+          "/innovision_transparent.png",
+          "/astronaut.png",
+          "/astronaut2.png",
+          "/planets/robowars.jpg",
+          "/planets/stellarnight.jpg",
+          "/planets/hackinnovision.jpg",
+          "/merch/odyssey-tee.jpg",
+          "/merch/nova-hoodie.jpg",
+          "/merch/star-map-tee.jpg",
+          "/merch/orbit-cap.jpg"
+        ];
+
+        await Promise.all(imagesToPreload.map(src => {
+          return new Promise((resolve) => {
+            const img = new window.Image();
+            img.onload = resolve;
+            img.onerror = resolve; // Ignore errors to not block entry
+            img.src = src;
+          });
+        }));
+
         // Ensure at least 1.5s of loading for smooth UX
         await new Promise(resolve => setTimeout(resolve, 1500));
       } catch (error) {
@@ -84,7 +118,7 @@ export default function PaintSplatterIntro({
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [router]);
 
   const handleStart = useCallback(() => {
     if (isFadingOut || isInitializing) return;
