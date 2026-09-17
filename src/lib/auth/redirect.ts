@@ -56,7 +56,6 @@ export function isPublicPath(pathname: string): boolean {
  */
 export function isAuthenticatedPath(pathname: string): boolean {
   const protectedPrefixes = [
-    "/profile",
     "/register",
     "/my-registration",
     "/dashboard",

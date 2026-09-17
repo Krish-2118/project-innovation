@@ -12,6 +12,9 @@ interface RegisterRequestBody {
   event_id?: string;
   turnstile_token?: string;
   user_id?: string; // Untrusted - will be deliberately ignored
+  full_name?: string;
+  college?: string;
+  phone?: string;
 }
 
 /**
@@ -73,13 +76,81 @@ export async function POST(request: Request) {
   const eventId = (body.event_id || "").trim();
 
   if (!eventSlug && !eventId) {
-    return NextResponse.json(
-      {
-        success: false,
-        error: "Validation error: event_slug or event_id is required.",
-      },
-      { status: 422 }
-    );
+    const { full_name, college, phone } = body;
+    if (!full_name || !college || !phone) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Validation error: Name, college, and mobile number are required.",
+        },
+        { status: 422 }
+      );
+    }
+
+    if (!/^\d{10}$/.test(phone)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Validation error: Mobile number must be exactly 10 digits.",
+        },
+        { status: 422 }
+      );
+    }
+
+    try {
+      const supabase = await createClient();
+
+      await supabase.from("profiles").update({
+        full_name,
+        college,
+        phone
+      }).eq("id", authenticatedUserId);
+
+      const { data: existingReg } = await supabase
+        .from("registrations")
+        .select("id")
+        .eq("user_id", authenticatedUserId)
+        .maybeSingle();
+
+      if (existingReg) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "You are already registered.",
+            errorCode: "DUPLICATE_REGISTRATION"
+          },
+          { status: 409 }
+        );
+      }
+
+      const registrationCode = generateRegistrationCode();
+      const qrPayload = generateOpaqueQrPayload(authenticatedUserId, registrationCode);
+
+      const { error: insertError } = await supabase.from("registrations").insert({
+        user_id: authenticatedUserId,
+        registration_code: registrationCode,
+        qr_payload: qrPayload
+      });
+
+      if (insertError) throw insertError;
+
+      return NextResponse.json(
+        {
+          success: true,
+          message: "Successfully registered for INNOVISION 2026.",
+        },
+        { status: 201 }
+      );
+    } catch (err: unknown) {
+      console.error("General registration error:", err);
+      return NextResponse.json(
+        {
+          success: false,
+          error: "An unexpected server error occurred while processing registration.",
+        },
+        { status: 500 }
+      );
+    }
   }
 
   try {

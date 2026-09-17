@@ -190,14 +190,9 @@ export default function LoginForm() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-            <Link
-              href="/profile"
-              className="w-full sm:w-auto px-8 py-3 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold text-xs tracking-widest uppercase hover:brightness-110 transition-all shadow-[0_0_20px_rgba(245,158,11,0.4)]"
-            >
-              Go to Profile
-            </Link>
 
-            {targetRedirect !== "/" && targetRedirect !== "/profile" && (
+
+            {targetRedirect !== "/" && (
               <Link
                 href={targetRedirect}
                 className="w-full sm:w-auto px-6 py-3 rounded-full border border-amber-500/40 bg-amber-500/10 text-amber-300 font-semibold text-xs tracking-widest uppercase hover:bg-amber-500/20 transition-all"
