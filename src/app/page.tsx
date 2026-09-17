@@ -5,7 +5,6 @@ import Image from "next/image";
 import { ChevronRight, Rocket } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRocketTransition } from "@/components/transition/RocketTransitionContext";
-import Footer from "@/components/layout/Footer";
 
 // Dynamically import heavy 3D canvases to prevent blocking initial page load
 const ConstellationsCanvas = dynamic(() => import("@/components/home/ConstellationsCanvas"), { ssr: false });
@@ -189,33 +188,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      {/* 6. Mobile Only Bottom Moon Horizon & Rover */}
-      <div className="md:hidden absolute -bottom-32 left-1/2 -translate-x-1/2 w-[135vw] max-w-[650px] pointer-events-none select-none z-20 flex flex-col items-center justify-end">
-        {/* Artistic Lunar Lander Craft Attached to Moon Apex */}
-        <div className="relative w-32 sm:w-44 h-32 sm:h-44 -mb-10 sm:-mb-14 translate-y-8 -translate-x-24 sm:-translate-x-8 z-30 transform -rotate-14">
-          <Image
-            src="/lander.png"
-            alt="Artistic Lunar Lander Spacecraft"
-            fill
-            unoptimized
-            loading="lazy"
-            className="object-contain filter drop-shadow-[0_8px_20px_rgba(0,0,0,0.95)] drop-shadow-[0_0_15px_rgba(251,191,36,0.35)]"
-          />
-        </div>
-
-        <Image
-          src="/mobile-moon.png"
-          alt="Moon Horizon"
-          width={700}
-          height={400}
-          loading="lazy"
-          unoptimized
-          className="object-contain object-bottom w-full h-auto filter drop-shadow-[0_-8px_20px_rgba(255,255,255,0.12)]"
-        />
-      </div>
     </main>
-    <Footer />
   </div>
   );
 }

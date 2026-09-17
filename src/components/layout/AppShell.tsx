@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, createContext } from "react";
 import Navbar from "@/components/layout/Navbar";
 import PaintSplatterIntro from "@/components/intro/PaintSplatterIntro";
 import { RocketTransitionProvider } from "@/components/transition/RocketTransitionContext";
+import Footer from "@/components/layout/Footer";
 
 export const AudioContext = createContext({
   isPlaying: false,
@@ -105,6 +106,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
           {/* Page Content */}
           {children}
+
+          {/* Global Footer */}
+          <Footer />
         </div>
       </RocketTransitionProvider>
     </AudioContext.Provider>

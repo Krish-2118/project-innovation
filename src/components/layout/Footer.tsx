@@ -43,12 +43,12 @@ const MapPinIcon = ({ className, strokeWidth = 1.5 }: { className?: string, stro
 
 export default function Footer() {
   return (
-    <footer className="relative w-full z-40 px-2 sm:px-4 md:px-8 pb-6 pt-16 mt-auto flex justify-center overflow-hidden">
+    <footer className="relative w-full z-40 px-2 sm:px-4 md:px-8 pb-4 sm:pb-6 pt-10 sm:pt-16 mt-auto flex justify-center overflow-hidden">
       {/* Decorative cosmic background glow for the footer area */}
       <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#020712] via-[#030c18]/30 to-transparent" />
       
       {/* Glassmorphism Panel */}
-      <div className="relative w-full max-w-[1800px] rounded-[32px] bg-[#030c18]/30 backdrop-blur-xl border-[1.5px] border-[#c8a046]/40 shadow-[0_0_30px_rgba(200,160,70,0.05),inset_0_0_20px_rgba(200,160,70,0.05)] px-6 py-8 md:px-12 lg:px-16 lg:py-10 overflow-hidden flex flex-col gap-10">
+      <div className="relative w-full max-w-[1800px] rounded-[32px] bg-[#030c18]/30 backdrop-blur-xl border-[1.5px] border-[#c8a046]/40 shadow-[0_0_30px_rgba(200,160,70,0.05),inset_0_0_20px_rgba(200,160,70,0.05)] px-4 py-6 md:px-12 lg:px-16 lg:py-10 overflow-hidden flex flex-col gap-8 lg:gap-10">
         
         {/* Subtle Constellation/Globe Decorations inside the panel */}
         <div className="absolute top-0 right-0 w-[40%] h-full opacity-[0.15] pointer-events-none select-none overflow-hidden">
@@ -64,11 +64,11 @@ export default function Footer() {
         </div>
 
         {/* Top Area: 4 Columns */}
-        <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
+        <div className="relative z-10 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-12 gap-x-2 gap-y-8 lg:gap-8">
           
           {/* Column 1: Brand */}
-          <div className="lg:col-span-4 flex flex-col items-center justify-center text-center -mt-6 lg:-mt-10">
-            <div className="relative w-full max-w-[750px] h-[190px] -mb-10 sm:-mb-12">
+          <div className="col-span-2 lg:col-span-4 order-1 lg:order-1 flex flex-col items-center justify-center text-center -mt-2 lg:-mt-10">
+            <div className="relative w-full max-w-[750px] h-[100px] sm:h-[130px] lg:h-[190px] -mb-4 sm:-mb-6 lg:-mb-12">
               <Image 
                 src="/innovision_transparent.png" 
                 alt="INNOVISION" 
@@ -91,7 +91,7 @@ export default function Footer() {
           </div>
 
           {/* Column 2: Quick Links */}
-          <div className="lg:col-span-2 flex flex-col items-center">
+          <div className="col-span-1 lg:col-span-2 order-2 lg:order-2 flex flex-col items-center">
             <div className="flex flex-col items-center mb-6">
               <h3 className="text-amber-100 font-serif tracking-[0.35em] uppercase text-[13px] mb-3">Quick Links</h3>
               <div className="flex items-center gap-3 w-full justify-center">
@@ -116,7 +116,7 @@ export default function Footer() {
           </div>
 
           {/* Column 3: Connect */}
-          <div className="lg:col-span-3 flex flex-col items-center text-center">
+          <div className="col-span-2 lg:col-span-3 order-4 lg:order-3 flex flex-col items-center text-center mt-4 lg:mt-0">
             <div className="flex flex-col items-center mb-6">
               <h3 className="text-amber-100 font-serif tracking-[0.35em] uppercase text-[13px] mb-3">Connect</h3>
               <div className="flex items-center gap-3 w-full justify-center">
@@ -153,7 +153,7 @@ export default function Footer() {
           </div>
 
           {/* Column 4: Event Info */}
-          <div className="lg:col-span-3 flex flex-col items-center lg:items-end lg:pr-4">
+          <div className="col-span-1 lg:col-span-3 order-3 lg:order-4 flex flex-col items-center lg:items-end lg:pr-4">
             <div className="flex flex-col items-center mb-6">
               <h3 className="text-amber-100 font-serif tracking-[0.35em] uppercase text-[13px] mb-3">Event Info</h3>
               <div className="flex items-center gap-3 w-full justify-center">
@@ -163,8 +163,8 @@ export default function Footer() {
               </div>
             </div>
             
-            <div className="flex flex-col gap-6 w-max mx-auto lg:mr-0 lg:ml-auto">
-              <div className="flex items-start gap-4">
+            <div className="flex flex-col gap-6 w-full lg:w-max mx-auto lg:mr-0 lg:ml-auto">
+              <div className="flex items-start gap-2 lg:gap-4 justify-center lg:justify-start">
                 <MapPinIcon className="w-5 h-5 text-[#c8a046] shrink-0 mt-0.5" strokeWidth={1.5} />
                 <div className="flex flex-col gap-2 text-xs text-amber-50/80 tracking-[0.15em] leading-relaxed text-left">
                   <span className="font-serif uppercase tracking-[0.25em] text-amber-100">INNOVISION 2026</span>
@@ -173,9 +173,9 @@ export default function Footer() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                <MailIcon className="w-5 h-5 text-[#c8a046] shrink-0" strokeWidth={1.5} />
-                <a href="mailto:innovision@nitrkl.ac.in" className="text-xs text-amber-50/80 tracking-[0.15em] hover:text-amber-300 transition-colors text-left">
+              <div className="flex items-center gap-2 lg:gap-4 justify-center lg:justify-start">
+                <MailIcon className="w-4 h-4 lg:w-5 lg:h-5 text-[#c8a046] shrink-0" strokeWidth={1.5} />
+                <a href="mailto:innovision@nitrkl.ac.in" className="text-[10px] lg:text-xs text-amber-50/80 tracking-[0.1em] lg:tracking-[0.15em] hover:text-amber-300 transition-colors text-center lg:text-left break-all">
                   innovision@nitrkl.ac.in
                 </a>
               </div>
