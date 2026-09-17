@@ -2,13 +2,15 @@
 
 import { useEffect, useRef } from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import PlanetaryWaypoints from "@/components/about/PlanetaryWaypoints";
-import AboutConstellations from "@/components/about/AboutConstellations";
 import SimplePinkLighting from "@/components/about/SimplePinkLighting";
 import SpacecraftCursor from "@/components/about/SpacecraftCursor";
 import CosmicCursorEcho from "@/components/about/CosmicCursorEcho";
-import CosmicCometSystem from "@/components/about/CosmicCometSystem";
-import FloatingAstronauts from "@/components/about/FloatingAstronauts";
+
+const AboutConstellations = dynamic(() => import("@/components/about/AboutConstellations"), { ssr: false });
+const CosmicCometSystem = dynamic(() => import("@/components/about/CosmicCometSystem"), { ssr: false });
+const FloatingAstronauts = dynamic(() => import("@/components/about/FloatingAstronauts"), { ssr: false });
 import "./about.css";
 
 export default function AboutPage() {

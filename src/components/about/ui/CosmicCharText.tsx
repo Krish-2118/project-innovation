@@ -46,22 +46,9 @@ export default function CosmicInteractiveParagraph({
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // High-speed sweep tracking: trigger laser sweep on words even during rapid cursor glides
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const target = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement | null;
-    const wordEl = target?.closest(".hologram-word") as HTMLElement | null;
-    if (wordEl && containerRef.current?.contains(wordEl) && !wordEl.classList.contains("hologram-active")) {
-      wordEl.classList.add("hologram-active");
-      setTimeout(() => {
-        wordEl.classList.remove("hologram-active");
-      }, 580);
-    }
-  };
-
   return (
     <div
       ref={containerRef}
-      onMouseMove={handleMouseMove}
       className="flex flex-col items-center text-center gap-3 sm:gap-4 w-full cursor-default select-none"
     >
       {paragraphs.map((paraText, pIdx) => {

@@ -33,9 +33,16 @@ export default function ConstellationsCanvas({
   const mouseRef = useRef({ x: mouseX, y: mouseY });
 
   useEffect(() => {
-    mouseRef.current.x = mouseX;
-    mouseRef.current.y = mouseY;
-  }, [mouseX, mouseY]);
+    const handleMouseMove = (e: MouseEvent) => {
+      if (window.innerWidth < 768) return;
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      mouseRef.current.x = x;
+      mouseRef.current.y = y;
+    };
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
