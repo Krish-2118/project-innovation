@@ -3,10 +3,12 @@
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 export default function FloatingAstronauts() {
   const [mounted, setMounted] = useState(false);
   const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -23,7 +25,7 @@ export default function FloatingAstronauts() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  if (!mounted) return null;
+  if (!mounted || isMobile) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none z-25 overflow-hidden select-none">

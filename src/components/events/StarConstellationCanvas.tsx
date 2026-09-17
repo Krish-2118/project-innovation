@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface Star {
   x: number;
@@ -26,8 +27,11 @@ export default function StarConstellationCanvas({
   const userSegmentsRef = useRef<{ p1: { x: number; y: number }; p2: { x: number; y: number }; time: number }[]>([]);
   const activeStarRef = useRef<Star | null>(null);
   const mousePosRef = useRef<{ x: number; y: number; active: boolean }>({ x: 0, y: 0, active: false });
+  const isMobile = useIsMobile();
 
   useEffect(() => {
+    if (isMobile) return;
+    
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -300,7 +304,7 @@ export default function StarConstellationCanvas({
     };
   }, []);
 
-  return (
+  return isMobile ? null : (
     <canvas
       ref={canvasRef}
       className="absolute inset-0 pointer-events-none z-[15]"

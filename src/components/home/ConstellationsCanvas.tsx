@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface ConstellationsCanvasProps {
   mouseX?: number;
@@ -31,6 +32,7 @@ export default function ConstellationsCanvas({
 }: ConstellationsCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: mouseX, y: mouseY });
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -45,6 +47,8 @@ export default function ConstellationsCanvas({
   }, []);
 
   useEffect(() => {
+    if (isMobile) return;
+    
     const container = containerRef.current;
     if (!container) return;
 
@@ -496,7 +500,7 @@ export default function ConstellationsCanvas({
     };
   }, []);
 
-  return (
+  return isMobile ? null : (
     <div
       ref={containerRef}
       className="absolute inset-0 pointer-events-none z-[1] w-full h-full overflow-hidden"

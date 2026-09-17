@@ -19,39 +19,19 @@ export async function verifyTurnstileToken(
     return { success: false, error: "Turnstile verification token is missing." };
   }
 
-  // Official Cloudflare Dummy Test Tokens (Only permitted in non-production environments)
-  const isDevOrTest = process.env.NODE_ENV !== "production";
-  if (isDevOrTest) {
-    if (
-      token === "XXXX.DUMMY.PASS.XXXX" ||
-      token === "1x00000000000000000000AA"
-    ) {
-      return { success: true };
-    }
 
-    if (
-      token === "XXXX.DUMMY.FAIL.XXXX" ||
-      token === "2x00000000000000000000AA"
-    ) {
-      return { success: false, error: "Turnstile bot challenge failed (test token)." };
-    }
-  }
 
   // Cloudflare Turnstile secret key validation
   const configuredSecret = process.env.TURNSTILE_SECRET_KEY;
   if (!configuredSecret) {
-    if (!isDevOrTest) {
-      console.error("CRITICAL SECURITY ERROR: TURNSTILE_SECRET_KEY is not configured in production. Failing closed.");
-      return {
-        success: false,
-        error: "Turnstile bot verification configuration is missing.",
-      };
-    }
-    // Only in non-production environments without an explicit secret, allow Cloudflare official pass-all test secret
-    console.warn("WARNING: Using Cloudflare Turnstile test secret in development/test environment.");
+    console.error("CRITICAL SECURITY ERROR: TURNSTILE_SECRET_KEY is not configured. Failing closed.");
+    return {
+      success: false,
+      error: "Turnstile bot verification configuration is missing.",
+    };
   }
 
-  const secretKey = configuredSecret || "1x0000000000000000000000000000000AA";
+  const secretKey = configuredSecret;
 
   try {
     const formData = new URLSearchParams();
