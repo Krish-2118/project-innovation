@@ -8,9 +8,9 @@ import SimplePinkLighting from "@/components/about/SimplePinkLighting";
 import SpacecraftCursor from "@/components/about/SpacecraftCursor";
 import CosmicCursorEcho from "@/components/about/CosmicCursorEcho";
 
-const AboutConstellations = dynamic(() => import("@/components/about/AboutConstellations"), { ssr: false });
-const CosmicCometSystem = dynamic(() => import("@/components/about/CosmicCometSystem"), { ssr: false });
-const FloatingAstronauts = dynamic(() => import("@/components/about/FloatingAstronauts"), { ssr: false });
+const AboutConstellations = dynamic(() => import("@/components/about/AboutConstellations"), { ssr: false, loading: () => null });
+const CosmicCometSystem = dynamic(() => import("@/components/about/CosmicCometSystem"), { ssr: false, loading: () => null });
+const FloatingAstronauts = dynamic(() => import("@/components/about/FloatingAstronauts"), { ssr: false, loading: () => null });
 import "./about.css";
 
 export default function AboutPage() {
