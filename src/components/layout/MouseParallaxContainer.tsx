@@ -7,80 +7,93 @@ interface MouseParallaxContainerProps {
   className?: string;
 }
 
+const MIN_WIDTH = 768;
+const EASE = 0.08;
+// Stop the loop once the eased position is within this distance of the target.
+const SETTLE_EPSILON = 0.0005;
+
 export default function MouseParallaxContainer({ children, className = "" }: MouseParallaxContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ targetX: 0, targetY: 0, currentX: 0, currentY: 0 });
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const { innerWidth, innerHeight } = window;
-      if (innerWidth < 768) return; // Disable on mobile
-      const x = (e.clientX / innerWidth - 0.5) * 2;
-      const y = (e.clientY / innerHeight - 0.5) * 2;
-      mouseRef.current.targetX = x;
-      mouseRef.current.targetY = y;
+    const container = containerRef.current;
+    if (!container) return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let elements: { el: HTMLElement; multiplier: number; scale: string | null }[] = [];
+    let animationFrameId = 0;
+    let running = false;
+
+    const collect = () => {
+      elements = Array.from(container.querySelectorAll<HTMLElement>("[data-parallax]")).map((el) => ({
+        el,
+        multiplier: parseFloat(el.getAttribute("data-parallax") || "0"),
+        scale: el.getAttribute("data-parallax-scale"),
+      }));
     };
 
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    const isEnabled = () => window.innerWidth >= MIN_WIDTH && !reducedMotion.matches;
 
-    let animationFrameId: number;
-    let isActive = window.innerWidth >= 768;
+    const resetTransforms = () => {
+      for (const { el, scale } of elements) {
+        el.style.transform = scale ? `scale(${scale})` : "none";
+      }
+    };
 
     const updateParallax = () => {
-      if (!isActive) return;
-
       const m = mouseRef.current;
-      m.currentX += (m.targetX - m.currentX) * 0.08;
-      m.currentY += (m.targetY - m.currentY) * 0.08;
+      m.currentX += (m.targetX - m.currentX) * EASE;
+      m.currentY += (m.targetY - m.currentY) * EASE;
 
-      if (containerRef.current) {
-        // Query elements with data-parallax
-        const elements = containerRef.current.querySelectorAll<HTMLElement>("[data-parallax]");
-        for (let i = 0; i < elements.length; i++) {
-          const el = elements[i];
-          const multiplier = parseFloat(el.getAttribute("data-parallax") || "0");
-          const scale = el.getAttribute("data-parallax-scale");
-          
-          let transform = `translate3d(${m.currentX * multiplier}px, ${m.currentY * multiplier}px, 0)`;
-          if (scale) {
-            transform += ` scale(${scale})`;
-          }
-          el.style.transform = transform;
-        }
+      for (const { el, multiplier, scale } of elements) {
+        let transform = `translate3d(${m.currentX * multiplier}px, ${m.currentY * multiplier}px, 0)`;
+        if (scale) transform += ` scale(${scale})`;
+        el.style.transform = transform;
       }
 
+      const settled =
+        Math.abs(m.targetX - m.currentX) < SETTLE_EPSILON && Math.abs(m.targetY - m.currentY) < SETTLE_EPSILON;
+      if (settled) {
+        running = false;
+        return;
+      }
       animationFrameId = requestAnimationFrame(updateParallax);
     };
 
-    if (isActive) {
+    const start = () => {
+      if (running || !isEnabled()) return;
+      running = true;
       animationFrameId = requestAnimationFrame(updateParallax);
-    }
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isEnabled()) return;
+      const { innerWidth, innerHeight } = window;
+      mouseRef.current.targetX = (e.clientX / innerWidth - 0.5) * 2;
+      mouseRef.current.targetY = (e.clientY / innerHeight - 0.5) * 2;
+      start();
+    };
 
     const handleResize = () => {
-      const wasActive = isActive;
-      isActive = window.innerWidth >= 768;
-      if (isActive && !wasActive) {
-        animationFrameId = requestAnimationFrame(updateParallax);
-      } else if (!isActive && wasActive) {
+      if (!isEnabled()) {
         cancelAnimationFrame(animationFrameId);
-        // Reset transforms if resizing to mobile
-        if (containerRef.current) {
-          const elements = containerRef.current.querySelectorAll<HTMLElement>("[data-parallax]");
-          for (let i = 0; i < elements.length; i++) {
-            const el = elements[i];
-            const scale = el.getAttribute("data-parallax-scale");
-            el.style.transform = scale ? `scale(${scale})` : "none";
-          }
-        }
+        running = false;
+        mouseRef.current = { targetX: 0, targetY: 0, currentX: 0, currentY: 0 };
+        resetTransforms();
       }
     };
 
+    collect();
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
     window.addEventListener("resize", handleResize);
+    reducedMotion.addEventListener("change", handleResize);
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleResize);
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      reducedMotion.removeEventListener("change", handleResize);
+      cancelAnimationFrame(animationFrameId);
     };
   }, []);
 

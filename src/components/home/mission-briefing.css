@@ -1,0 +1,193 @@
+/* ==========================================================================
+   Mission Briefing (homepage About)
+   Driven entirely by CSS custom properties:
+     --p        section scroll progress 0 → 1   (useScrollProgress)
+     --mx/--my  eased pointer position -1 → 1   (usePointerDepth, on :root)
+   Colour tokens (--ink, --paper, --gold, --muted-line) live in globals.css.
+   ========================================================================== */
+
+.mb {
+  /* 1 = fully revealed: the section stays readable before/without JavaScript. */
+  --p: 1;
+  --ease-briefing: cubic-bezier(0.2, 0.75, 0.2, 1);
+
+  position: relative;
+  z-index: 10;
+  overflow: hidden;
+  padding: 22vh 6vw 26vh;
+  color: var(--paper);
+  /* Solid ink (matching the hero's fade) that eases out at the very bottom
+     so the next chapter's sky reappears without a hard edge. */
+  background: linear-gradient(to bottom, var(--ink) calc(100% - 18vh), transparent);
+}
+
+/* --------------------------------------------------------------------------
+   Depth layers (back → front)
+   -------------------------------------------------------------------------- */
+
+.mb__stars,
+.mb__saturn {
+  position: absolute;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.mb__stars {
+  inset: -30% 0;
+}
+
+.mb__stars--far {
+  opacity: 0.55;
+  background-size: 380px 380px;
+  background-image:
+    radial-gradient(1px 1px at 8% 12%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 27% 64%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 41% 23%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 56% 88%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 68% 41%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 79% 7%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 91% 72%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 15% 93%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 48% 52%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 86% 33%, #fff 60%, transparent 62%);
+  transform: translate3d(calc(var(--mx, 0) * -8px), calc(var(--p) * -90px), 0);
+}
+
+.mb__stars--near {
+  opacity: 0.8;
+  background-size: 620px 620px;
+  background-image:
+    radial-gradient(1.6px 1.6px at 12% 30%, #fff 60%, transparent 62%),
+    radial-gradient(1.6px 1.6px at 34% 78%, #fff 60%, transparent 62%),
+    radial-gradient(1.6px 1.6px at 52% 14%, #fff 60%, transparent 62%),
+    radial-gradient(1.6px 1.6px at 71% 61%, #fff 60%, transparent 62%),
+    radial-gradient(1.6px 1.6px at 88% 22%, #fff 60%, transparent 62%),
+    radial-gradient(1.6px 1.6px at 23% 52%, #fff 60%, transparent 62%),
+    radial-gradient(1.6px 1.6px at 63% 92%, var(--gold) 60%, transparent 62%);
+  transform: translate3d(calc(var(--mx, 0) * -22px), calc(var(--p) * -280px), 0);
+}
+
+.mb__saturn {
+  right: -4vw;
+  top: 18%;
+  width: min(600px, 70vw);
+  aspect-ratio: 504 / 308;
+  opacity: 0.92;
+  background: center / contain no-repeat;
+  -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent);
+  mask-image: radial-gradient(closest-side, #000 72%, transparent);
+  transform:
+    translate3d(calc(var(--mx, 0) * -40px), calc((var(--p) - 0.5) * -380px), 0)
+    rotate(calc(var(--p) * 14deg - 7deg));
+}
+
+/* --------------------------------------------------------------------------
+   Content (static — it never moves, so it stays easy to read)
+   -------------------------------------------------------------------------- */
+
+.mb__inner {
+  position: relative;
+  display: flex;
+  max-width: 1100px;
+  margin-inline: auto;
+  flex-direction: column;
+  gap: 44px;
+}
+
+.mb__eyebrow {
+  font-family: var(--font-cinzel), Georgia, serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.mb__statement {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: clamp(34px, 4.8vw, 76px);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+/* Scroll-scrubbed: a faint blurred ghost that sharpens as --p passes --s. */
+.mb__line {
+  --s: 0;
+  display: block;
+  opacity: clamp(0.14, calc((var(--p) - var(--s)) * 11), 1);
+  filter: blur(calc(clamp(0, calc((var(--s) + 0.09 - var(--p)) * 40), 4) * 1px));
+}
+
+.mb__line--emphasis {
+  margin-top: 0.35em;
+  font-style: italic;
+  color: var(--gold);
+}
+
+.mb__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.mb__chip {
+  padding: 12px 18px;
+  border: 1px solid var(--muted-line);
+  border-radius: 9999px;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  transition: border-color 200ms ease, color 200ms ease;
+}
+
+.mb__chip:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* Entry reveal for the eyebrow and chips (time-based, plays once via <Reveal>). */
+.iv-reveal.iv-reveal--briefing {
+  transition:
+    opacity 1000ms var(--ease-briefing) var(--iv-delay),
+    translate 1000ms var(--ease-briefing) var(--iv-delay),
+    filter 1000ms var(--ease-briefing) var(--iv-delay);
+}
+
+.iv-reveal.iv-reveal--briefing[data-reveal="pending"] {
+  opacity: 0;
+  translate: 0 36px;
+  filter: blur(6px);
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion: static, fully readable
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .mb__stars,
+  .mb__saturn {
+    transform: none;
+    will-change: auto;
+  }
+
+  .mb__saturn {
+    rotate: 0deg;
+  }
+
+  .mb__line {
+    opacity: 1;
+    filter: none;
+  }
+
+  .iv-reveal.iv-reveal--briefing,
+  .iv-reveal.iv-reveal--briefing[data-reveal="pending"] {
+    opacity: 1;
+    translate: none;
+    filter: none;
+    transition: none;
+  }
+}

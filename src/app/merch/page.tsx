@@ -39,7 +39,7 @@ export default function MerchPage() {
       {/* Background Elements */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <Image
-          src="/bg.png"
+          src="/backdrop.png"
           alt="Space Background"
           fill
           priority

@@ -7,6 +7,14 @@
 
 
 :root {
+  /* Mission Briefing tokens */
+  --ink: #0e0e10;
+  --paper: #ebeae5;
+  --gold: #d6a243;
+  --muted-line: rgba(235, 234, 229, 0.28);
+  --muted: #bdbab1;
+  --frame-line: rgba(235, 234, 229, 0.25);
+
   --font-exo2: var(--font-exo2), sans-serif;
   --font-lora: var(--font-lora), serif;
   --font-outfit: var(--font-outfit), sans-serif;

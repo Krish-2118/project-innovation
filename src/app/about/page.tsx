@@ -31,7 +31,7 @@ export default function AboutPage() {
           }}
         >
           <Image
-            src="/back2.png"
+            src="/backdrop.png"
             alt="Deep Cosmic Space Background"
             fill
             priority

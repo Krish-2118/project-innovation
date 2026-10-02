@@ -1,0 +1,117 @@
+/* ==========================================================================
+   Text loops — scroll-reactive marquee bands between homepage chapters.
+   Motion is applied by GSAP (TextLoop.tsx); this file is layout and type only.
+   Tokens (--ink, --paper, --gold, --muted) live in globals.css.
+   ========================================================================== */
+
+.tl {
+  position: relative;
+  z-index: 10;
+  /* Identical rhythm for every band so they read as evenly spaced beats. */
+  padding-block: clamp(48px, 9vh, 96px);
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+
+.tl--ink {
+  background: var(--ink);
+}
+
+/* A slightly tilted strip, wider than the screen so its corners never show. */
+.tl__tape {
+  position: relative;
+  left: 50%;
+  display: flex;
+  width: 112vw;
+  flex-direction: column;
+  gap: 14px;
+  padding-block: 20px;
+  translate: -50% 0;
+  rotate: calc(var(--tilt, 0) * 1deg);
+  border-block: 1px solid rgba(214, 162, 67, 0.24);
+  background: rgba(14, 14, 16, 0.45);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+
+.tl__row {
+  display: flex;
+  width: max-content;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.tl__half {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.tl__unit {
+  display: inline-flex;
+  align-items: center;
+}
+
+.tl__word {
+  padding-inline: 0.3em;
+  font-family: var(--font-cinzel), Georgia, serif;
+  font-size: clamp(2.1rem, 6vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.tl__word--solid {
+  color: var(--paper);
+}
+
+.tl__word--outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(235, 234, 229, 0.6);
+}
+
+.tl__word--gold {
+  font-family: var(--font-cormorant), Georgia, serif;
+  /* Cormorant runs small; nudge it up to match Cinzel's visual height. */
+  font-size: clamp(2.5rem, 6.9vw, 6.4rem);
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--gold);
+  text-shadow: 0 0 28px rgba(214, 162, 67, 0.35);
+}
+
+.tl__star {
+  padding-inline: 0.5em;
+  font-size: clamp(0.9rem, 1.8vw, 1.6rem);
+  color: var(--gold);
+  text-shadow: 0 0 12px rgba(214, 162, 67, 0.8);
+}
+
+.tl__tele {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  opacity: 0.75;
+}
+
+.tl__dot {
+  padding-inline: 1.6em;
+  color: var(--gold);
+}
+
+/* Used inside a section (e.g. the Finale) rather than between two sections. */
+.tl--inset {
+  /* Full-bleed regardless of the host section's side padding. */
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  padding-block: clamp(24px, 5vh, 56px);
+}

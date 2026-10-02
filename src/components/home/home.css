@@ -1,0 +1,1014 @@
+/* ==========================================================================
+   INNOVISION 2026 — Homepage "Celestial Odyssey"
+   One continuous voyage: Launch → Origin → Transmissions → Observatory →
+   Navigation → Horizon. All classes are prefixed `iv-`.
+   ========================================================================== */
+
+.iv-home {
+  --iv-ink: #020712;
+  --iv-gold: #fbbf24;
+  --iv-gold-soft: #fde68a;
+  --iv-cream: #fef3c7;
+  --iv-teal: #5eead4;
+  --iv-sky: #7dd3fc;
+  --iv-violet: #c4b5fd;
+  --iv-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --iv-ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --iv-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --iv-display-font: var(--font-cinzel), "Cinzel", Georgia, serif;
+  --iv-body-font: var(--font-lora), Georgia, serif;
+}
+
+.iv-home section[id] {
+  scroll-margin-top: 0;
+}
+
+.iv-home :where(a, button):focus-visible {
+  outline: 2px solid var(--iv-gold);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+/* --------------------------------------------------------------------------
+   Typography
+   -------------------------------------------------------------------------- */
+
+.iv-display {
+  font-family: var(--iv-display-font);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: 0.02em;
+  color: #fdf8ec;
+  text-wrap: balance;
+  text-shadow: 0 2px 30px rgba(2, 7, 18, 0.8);
+}
+
+.iv-display em {
+  font-style: normal;
+  background: linear-gradient(100deg, var(--iv-gold-soft) 0%, var(--iv-gold) 38%, #f59e0b 62%, var(--iv-cream) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: none;
+}
+
+.iv-tone-violet .iv-display em {
+  background-image: linear-gradient(100deg, #e9d5ff 0%, var(--iv-violet) 40%, var(--iv-gold-soft) 100%);
+}
+
+.iv-tone-teal .iv-display em {
+  background-image: linear-gradient(100deg, #ccfbf1 0%, var(--iv-teal) 45%, var(--iv-gold-soft) 100%);
+}
+
+.iv-eyebrow {
+  font-family: var(--iv-display-font);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: rgba(253, 230, 138, 0.85);
+}
+
+.iv-mono {
+  font-family: var(--iv-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+.iv-body {
+  font-family: var(--iv-body-font);
+  font-size: clamp(1rem, 1.1vw, 1.1rem);
+  line-height: 1.85;
+  color: rgba(226, 232, 240, 0.8);
+}
+
+.iv-quote {
+  font-family: var(--iv-body-font);
+  font-style: italic;
+  font-size: clamp(1.35rem, 2.8vw, 2.25rem);
+  line-height: 1.45;
+  color: #fdf9ef;
+  text-wrap: balance;
+}
+
+.iv-link {
+  font-family: var(--iv-body-font);
+  color: #fcd34d;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  padding-bottom: 2px;
+  transition: color 0.3s ease, background-size 0.4s var(--iv-ease-soft);
+}
+
+.iv-link:hover {
+  color: var(--iv-cream);
+  background-size: 0% 1px;
+  background-position: 100% 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Chapter headings
+   -------------------------------------------------------------------------- */
+
+.iv-chapter__numeral {
+  font-family: var(--iv-display-font);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--iv-gold);
+  text-shadow: 0 0 14px rgba(251, 191, 36, 0.6);
+}
+
+.iv-chapter__rule {
+  width: 3rem;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(251, 191, 36, 0.8), rgba(251, 191, 36, 0));
+}
+
+.iv-tone-violet .iv-chapter__numeral {
+  color: var(--iv-violet);
+  text-shadow: 0 0 14px rgba(196, 181, 253, 0.6);
+}
+.iv-tone-violet .iv-chapter__rule {
+  background: linear-gradient(90deg, rgba(196, 181, 253, 0.8), rgba(196, 181, 253, 0));
+}
+.iv-tone-violet .iv-eyebrow {
+  color: rgba(221, 214, 254, 0.85);
+}
+.iv-tone-teal .iv-chapter__numeral {
+  color: var(--iv-teal);
+  text-shadow: 0 0 14px rgba(94, 234, 212, 0.6);
+}
+.iv-tone-teal .iv-chapter__rule {
+  background: linear-gradient(90deg, rgba(94, 234, 212, 0.8), rgba(94, 234, 212, 0));
+}
+.iv-tone-teal .iv-eyebrow {
+  color: rgba(204, 251, 241, 0.85);
+}
+
+/* --------------------------------------------------------------------------
+   Buttons
+   -------------------------------------------------------------------------- */
+
+.iv-btn-primary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 9999px;
+  background: rgba(2, 7, 18, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.9), 0 0 40px rgba(251, 191, 36, 0.12);
+  transition: scale 0.5s cubic-bezier(0.32, 0.72, 0, 1), border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.iv-btn-primary:hover {
+  scale: 1.05;
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.9), 0 0 50px rgba(251, 191, 36, 0.28);
+}
+
+.iv-btn-primary:active {
+  scale: 0.96;
+}
+
+.iv-btn-primary__core {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.875rem 1.75rem;
+  background: rgba(3, 9, 30, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .iv-btn-primary {
+    padding: 6px;
+  }
+  .iv-btn-primary__core {
+    padding: 1rem 2.25rem;
+  }
+}
+
+.iv-btn-primary__texture {
+  position: absolute;
+  inset: 0;
+  background: url("/celestial-text-bg.png") center / cover;
+  opacity: 0.2;
+  mix-blend-mode: screen;
+  transition: opacity 0.5s ease;
+}
+
+.iv-btn-primary:hover .iv-btn-primary__texture {
+  opacity: 0.38;
+}
+
+.iv-btn-primary__glint {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+  translate: -100% 0;
+  transition: translate 1s ease-in-out;
+}
+
+.iv-btn-primary:hover .iv-btn-primary__glint {
+  translate: 100% 0;
+}
+
+.iv-btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.85rem 1.6rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+  background: rgba(251, 191, 36, 0.05);
+  backdrop-filter: blur(8px);
+  color: var(--iv-cream);
+  font-family: var(--iv-display-font);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  transition: border-color 0.4s ease, background-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.iv-btn-ghost > span {
+  transition: translate 0.4s var(--iv-ease-soft);
+}
+
+.iv-btn-ghost:hover {
+  border-color: rgba(251, 191, 36, 0.75);
+  background: rgba(251, 191, 36, 0.12);
+  box-shadow: 0 0 28px rgba(251, 191, 36, 0.2);
+}
+
+.iv-btn-ghost:hover > span {
+  translate: 4px 0;
+}
+
+.iv-icon-btn {
+  display: inline-flex;
+  width: 2.75rem;
+  height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid rgba(251, 191, 36, 0.3);
+  background: rgba(2, 7, 18, 0.6);
+  color: var(--iv-cream);
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+.iv-icon-btn:hover {
+  border-color: rgba(251, 191, 36, 0.8);
+  background: rgba(251, 191, 36, 0.12);
+  color: var(--iv-gold);
+}
+
+/* --------------------------------------------------------------------------
+   Reveal-on-scroll (driven by <Reveal>, which sets data-reveal)
+   -------------------------------------------------------------------------- */
+
+.iv-reveal {
+  --iv-delay: 0ms;
+  transition:
+    opacity 1s var(--iv-ease-out) var(--iv-delay),
+    translate 1.2s var(--iv-ease-out) var(--iv-delay),
+    scale 1.2s var(--iv-ease-out) var(--iv-delay),
+    filter 1.2s var(--iv-ease-out) var(--iv-delay);
+}
+
+.iv-reveal[data-reveal="pending"] {
+  opacity: 0;
+}
+.iv-reveal--rise[data-reveal="pending"] {
+  translate: 0 36px;
+}
+.iv-reveal--focus[data-reveal="pending"] {
+  filter: blur(12px);
+  scale: 1.04;
+}
+.iv-reveal--drift-left[data-reveal="pending"] {
+  translate: -48px 0;
+}
+.iv-reveal--drift-right[data-reveal="pending"] {
+  translate: 48px 0;
+}
+
+/* --------------------------------------------------------------------------
+   Launch (hero) entrance — paused until AppShell marks the page revealed
+   -------------------------------------------------------------------------- */
+
+.iv-hero-in {
+  animation-duration: 1.6s;
+  animation-timing-function: var(--iv-ease-out);
+  animation-fill-mode: both;
+}
+
+[data-revealed="false"] .iv-hero-in {
+  animation-play-state: paused;
+}
+
+.iv-hero-in--sky {
+  animation-name: iv-sky-in;
+  animation-duration: 3.2s;
+}
+.iv-hero-in--focus {
+  animation-name: iv-focus-in;
+  animation-duration: 2.2s;
+  animation-delay: 0.3s;
+}
+.iv-hero-in--spread {
+  animation-name: iv-spread-in;
+  animation-duration: 1.8s;
+  animation-delay: 0.9s;
+}
+.iv-hero-in--rise {
+  animation-name: iv-rise-in;
+  animation-delay: 1.3s;
+}
+.iv-hero-in--from-left {
+  animation-name: iv-drift-in-left;
+  animation-duration: 2.6s;
+  animation-delay: 0.5s;
+}
+.iv-hero-in--from-right {
+  animation-name: iv-drift-in-right;
+  animation-duration: 2.6s;
+  animation-delay: 0.7s;
+}
+.iv-hero-in--late {
+  animation-name: iv-fade-in;
+  animation-duration: 1.4s;
+  animation-delay: 2s;
+}
+
+@keyframes iv-sky-in {
+  from {
+    opacity: 0.2;
+    scale: 1.18;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+@keyframes iv-focus-in {
+  from {
+    opacity: 0;
+    scale: 1.14;
+    filter: blur(18px);
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+    filter: blur(0);
+  }
+}
+@keyframes iv-spread-in {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    filter: blur(0);
+  }
+}
+@keyframes iv-rise-in {
+  from {
+    opacity: 0;
+    translate: 0 28px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes iv-drift-in-left {
+  from {
+    opacity: 0;
+    translate: -16vw 8vh;
+    rotate: -14deg;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    rotate: 0deg;
+  }
+}
+@keyframes iv-drift-in-right {
+  from {
+    opacity: 0;
+    translate: 16vw 10vh;
+    rotate: 12deg;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    rotate: 0deg;
+  }
+}
+@keyframes iv-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Scroll cue */
+.iv-scroll-cue {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.5rem;
+}
+
+.iv-scroll-cue__track {
+  position: relative;
+  width: 1px;
+  height: 52px;
+  overflow: hidden;
+  background: linear-gradient(rgba(253, 230, 138, 0.5), rgba(253, 230, 138, 0));
+}
+
+.iv-scroll-cue__dot {
+  position: absolute;
+  left: -1.5px;
+  top: 0;
+  width: 4px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--iv-gold);
+  box-shadow: 0 0 10px var(--iv-gold);
+  animation: iv-cue 2.4s var(--iv-ease-soft) infinite;
+}
+
+@keyframes iv-cue {
+  0% {
+    translate: 0 -12px;
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    translate: 0 52px;
+    opacity: 0;
+  }
+}
+
+/* Film grain over the whole sky */
+.iv-grain {
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* --------------------------------------------------------------------------
+   Chapter rail
+   -------------------------------------------------------------------------- */
+
+.iv-rail {
+  position: fixed;
+  left: 1.75rem;
+  top: 50%;
+  translate: 0 -50%;
+  z-index: 40;
+}
+
+.iv-rail__line {
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  bottom: 8px;
+  width: 1px;
+  background: rgba(253, 230, 138, 0.16);
+}
+
+.iv-rail__progress {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(var(--iv-gold), var(--iv-teal));
+  transform-origin: top;
+  transition: transform 0.9s var(--iv-ease-soft);
+}
+
+.iv-rail__item {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 2px 0;
+}
+
+.iv-rail__node {
+  position: relative;
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  border-radius: 9999px;
+  border: 1px solid rgba(253, 230, 138, 0.5);
+  background: var(--iv-ink);
+  transition: background-color 0.5s ease, box-shadow 0.5s ease, scale 0.5s var(--iv-ease-soft);
+}
+
+.iv-rail__item[data-passed="true"] .iv-rail__node {
+  background: rgba(251, 191, 36, 0.55);
+  border-color: transparent;
+}
+
+.iv-rail__item[data-active="true"] .iv-rail__node {
+  background: var(--iv-gold);
+  border-color: transparent;
+  scale: 1.25;
+  box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.14), 0 0 14px rgba(251, 191, 36, 0.9);
+}
+
+.iv-rail__label {
+  font-family: var(--iv-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(254, 243, 199, 0.85);
+  padding: 0.3rem 0.6rem;
+  border-radius: 9999px;
+  background: rgba(2, 7, 18, 0.7);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  translate: -6px 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease, translate 0.35s var(--iv-ease-soft);
+}
+
+.iv-rail__item:hover .iv-rail__label,
+.iv-rail__item:focus-visible .iv-rail__label {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.iv-rail__numeral {
+  margin-right: 0.7em;
+  color: var(--iv-gold);
+}
+
+@keyframes iv-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   II — Transmissions
+   -------------------------------------------------------------------------- */
+
+.iv-transmissions__atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 55% 45% at 72% 22%, rgba(245, 158, 11, 0.13), transparent 70%),
+    radial-gradient(ellipse 45% 40% at 18% 85%, rgba(56, 189, 248, 0.07), transparent 70%),
+    linear-gradient(to bottom, transparent, rgba(2, 7, 18, 0.45) 20%, rgba(2, 7, 18, 0.45) 80%, transparent);
+}
+
+.iv-satellite {
+  position: absolute;
+  top: 2rem;
+  right: -18vw;
+  width: min(72vw, 460px);
+  aspect-ratio: 1;
+  pointer-events: none;
+  opacity: 0.45;
+}
+
+@media (min-width: 768px) {
+  .iv-satellite {
+    right: -4vw;
+    top: 3rem;
+    width: min(40vw, 480px);
+    opacity: 0.8;
+  }
+}
+
+.iv-satellite__craft {
+  position: absolute;
+  inset: 0;
+  /* Derived from satellite.png with its black background baked into alpha. */
+  background: url("/textures/satellite-560.webp") center / contain no-repeat;
+  animation: iv-satellite-drift 18s ease-in-out infinite;
+}
+
+/* Signal rings emanate from the dish (upper-right of the artwork) */
+.iv-satellite__pulse {
+  position: absolute;
+  left: 73%;
+  top: 28%;
+  width: 60px;
+  height: 60px;
+  margin: -30px 0 0 -30px;
+  border-radius: 50%;
+  border: 1px solid rgba(251, 191, 36, 0.55);
+  animation: iv-pulse 5.4s var(--iv-ease-soft) infinite;
+}
+.iv-satellite__pulse--2 {
+  animation-delay: 1.8s;
+}
+.iv-satellite__pulse--3 {
+  animation-delay: 3.6s;
+}
+
+@keyframes iv-pulse {
+  from {
+    scale: 0.4;
+    opacity: 0.9;
+  }
+  to {
+    scale: 7;
+    opacity: 0;
+  }
+}
+
+@keyframes iv-satellite-drift {
+  0%,
+  100% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  50% {
+    translate: -14px 18px;
+    rotate: -4deg;
+  }
+}
+
+.iv-wave {
+  overflow: visible;
+}
+.iv-wave path {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+.iv-wave__ghost {
+  stroke: rgba(251, 191, 36, 0.2);
+  stroke-width: 1.25;
+}
+.iv-wave__signal {
+  stroke: var(--iv-gold);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 0.14 0.86;
+  filter: drop-shadow(0 0 6px rgba(251, 191, 36, 0.85));
+  animation: iv-signal 5s linear infinite;
+}
+
+@keyframes iv-signal {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.iv-live-dot {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #f59e0b;
+  box-shadow: 0 0 10px #f59e0b;
+}
+.iv-live-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid #f59e0b;
+  animation: iv-ping 2.4s ease-out infinite;
+}
+
+@keyframes iv-ping {
+  from {
+    scale: 1;
+    opacity: 0.9;
+  }
+  to {
+    scale: 2.8;
+    opacity: 0;
+  }
+}
+
+.iv-quote-glyph {
+  position: absolute;
+  top: -4.5rem;
+  left: 50%;
+  translate: -50% 0;
+  font-family: var(--iv-display-font);
+  font-size: 9rem;
+  line-height: 1;
+  color: rgba(251, 191, 36, 0.22);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   IV — Navigation (FAQ)
+   -------------------------------------------------------------------------- */
+
+.iv-navigation__atmosphere {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 50% 50% at 15% 30%, rgba(20, 184, 166, 0.1), transparent 70%),
+    linear-gradient(to bottom, transparent, rgba(2, 7, 18, 0.8) 14%, rgba(2, 7, 18, 0.8) 86%, transparent);
+}
+
+.iv-starchart {
+  position: absolute;
+  left: -18vw;
+  top: 6%;
+  width: min(80vw, 900px);
+  height: auto;
+  pointer-events: none;
+  fill: none;
+  stroke: rgba(94, 234, 212, 0.08);
+  stroke-width: 1;
+}
+
+.iv-contact-card {
+  max-width: 24rem;
+  padding: 1.5rem 1.75rem;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(94, 234, 212, 0.2);
+  background: linear-gradient(140deg, rgba(13, 35, 48, 0.55), rgba(2, 7, 18, 0.55));
+  backdrop-filter: blur(10px);
+}
+
+.iv-faq {
+  border-top: 1px solid rgba(94, 234, 212, 0.16);
+}
+
+.iv-faq__item {
+  position: relative;
+  border-bottom: 1px solid rgba(94, 234, 212, 0.16);
+}
+
+.iv-faq__item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -1px;
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, var(--iv-teal), var(--iv-gold), transparent);
+  transform-origin: left;
+  scale: 0 1;
+  transition: scale 0.8s var(--iv-ease-out);
+}
+
+.iv-faq__item[data-open="true"]::before {
+  scale: 1 1;
+}
+
+.iv-faq__trigger {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 2.75rem 1fr 1.5rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.6rem 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.iv-faq__index {
+  color: rgba(94, 234, 212, 0.7);
+  transition: color 0.4s ease;
+}
+
+.iv-faq__question {
+  font-family: var(--iv-body-font);
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  font-weight: 500;
+  color: #f1f5f9;
+  transition: color 0.3s ease;
+}
+
+.iv-faq__trigger:hover .iv-faq__question,
+.iv-faq__item[data-open="true"] .iv-faq__question {
+  color: var(--iv-gold-soft);
+}
+
+.iv-faq__item[data-open="true"] .iv-faq__index {
+  color: var(--iv-gold);
+}
+
+.iv-faq__star {
+  justify-self: end;
+  color: var(--iv-teal);
+  transition: rotate 0.6s var(--iv-ease-out), color 0.4s ease, scale 0.6s var(--iv-ease-out);
+}
+
+.iv-faq__item[data-open="true"] .iv-faq__star {
+  rotate: 135deg;
+  scale: 1.25;
+  color: var(--iv-gold);
+}
+
+.iv-faq__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.55s var(--iv-ease-soft);
+}
+
+.iv-faq__item[data-open="true"] .iv-faq__panel {
+  grid-template-rows: 1fr;
+}
+
+.iv-faq__panel-inner {
+  min-height: 0;
+  overflow: hidden;
+  padding-left: 3.5rem;
+  padding-right: 2rem;
+}
+
+.iv-faq__panel-inner > :last-child {
+  margin-bottom: 1.75rem;
+}
+
+/* --------------------------------------------------------------------------
+   V — Horizon (finale)
+   -------------------------------------------------------------------------- */
+
+.iv-finale {
+  view-timeline: --iv-finale block;
+}
+
+.iv-finale__eclipse {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: min(125vw, 920px);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  pointer-events: none;
+}
+
+.iv-finale__corona {
+  position: absolute;
+  inset: -22%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(251, 191, 36, 0.24), rgba(251, 146, 60, 0.07) 42%, transparent 66%);
+}
+
+.iv-finale__ring {
+  position: absolute;
+  inset: 0;
+  opacity: 0.6;
+  /* Gold light shaped by the ring artwork's luminance */
+  background: radial-gradient(circle, #fff7d6 0%, #fbbf24 38%, #d97706 62%, #92400e 80%);
+  -webkit-mask: url("/textures/ring-mask-640.webp") center / contain no-repeat;
+  mask: url("/textures/ring-mask-640.webp") center / contain no-repeat;
+  animation: iv-spin 160s linear infinite;
+}
+
+.iv-finale__disc {
+  position: absolute;
+  inset: 18%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(2, 7, 18, 0.92) 30%, rgba(2, 7, 18, 0.55) 55%, transparent 72%);
+}
+
+/* Fades the dawn planet into the sky below so it hands off to the footer without a seam */
+.iv-finale__horizon-wrap {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 40vh;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent);
+  mask-image: linear-gradient(to bottom, #000 60%, transparent);
+}
+
+.iv-finale__horizon {
+  position: absolute;
+  left: 50%;
+  bottom: calc(14vh - 220vw);
+  width: 220vw;
+  aspect-ratio: 1;
+  translate: -50% 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 0%, rgba(180, 83, 9, 0.35), var(--iv-ink) 9%);
+  box-shadow:
+    0 -1px 0 rgba(253, 230, 138, 0.55),
+    0 -18px 90px rgba(251, 191, 36, 0.22),
+    inset 0 20px 60px -26px rgba(253, 230, 138, 0.45);
+}
+
+.iv-finale .iv-display {
+  text-shadow: 0 4px 40px rgba(2, 7, 18, 0.95), 0 0 2px rgba(2, 7, 18, 0.9);
+}
+
+/* --------------------------------------------------------------------------
+   Scroll-driven enhancements (where supported; static elsewhere)
+   -------------------------------------------------------------------------- */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .iv-satellite {
+      animation: iv-satellite-pass linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+
+    .iv-starchart {
+      animation: iv-starchart-turn linear both;
+      animation-timeline: view();
+      animation-range: cover 0% cover 100%;
+    }
+
+    .iv-finale__eclipse {
+      animation: iv-eclipse-grow linear both;
+      animation-timeline: --iv-finale;
+      animation-range: entry 0% cover 50%;
+    }
+  }
+}
+
+@keyframes iv-satellite-pass {
+  from {
+    translate: 6vw 12vh;
+  }
+  to {
+    translate: -6vw -10vh;
+  }
+}
+
+@keyframes iv-starchart-turn {
+  from {
+    rotate: -12deg;
+  }
+  to {
+    rotate: 12deg;
+  }
+}
+
+@keyframes iv-eclipse-grow {
+  from {
+    scale: 0.6;
+    opacity: 0;
+  }
+  to {
+    scale: 1;
+    opacity: 1;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion: keep the composition, drop the movement
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .iv-hero-in,
+  .iv-satellite__craft,
+  .iv-satellite__pulse,
+  .iv-wave__signal,
+  .iv-live-dot::after,
+  .iv-scroll-cue__dot,
+  .iv-finale__ring {
+    animation: none !important;
+  }
+
+  .iv-reveal {
+    transition: opacity 0.4s ease;
+  }
+  .iv-reveal[data-reveal="pending"] {
+    translate: none;
+    scale: none;
+    filter: none;
+  }
+
+  .iv-satellite__pulse {
+    display: none;
+  }
+
+  /* Scroll-linked hero transforms are applied inline by Framer Motion; neutralise
+     them here rather than branching markup, which would break hydration. */
+  .iv-scroll-fx {
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}

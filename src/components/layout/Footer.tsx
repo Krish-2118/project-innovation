@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { NAV_LINKS, SITE, SOCIAL_LINKS, type SocialPlatform } from "@/lib/data/site";
 
 // Inline SVGs for social icons to avoid lucide-react export issues
 const InstagramIcon = ({ className, strokeWidth = 1.5 }: { className?: string, strokeWidth?: number }) => (
@@ -41,11 +42,70 @@ const MapPinIcon = ({ className, strokeWidth = 1.5 }: { className?: string, stro
   </svg>
 );
 
+const SOCIAL_ICONS: Record<SocialPlatform, typeof InstagramIcon> = {
+  instagram: InstagramIcon,
+  linkedin: LinkedinIcon,
+  youtube: YoutubeIcon,
+};
+
+// Only profiles with a confirmed URL are shown, followed by email.
+const CONNECT_LINKS = [
+  ...SOCIAL_LINKS.filter((s) => s.href).map((s) => ({ icon: SOCIAL_ICONS[s.platform], href: s.href, label: s.label })),
+  { icon: MailIcon, href: `mailto:${SITE.email}`, label: `Email ${SITE.email}` },
+];
+
+// Faint constellation lines drawn above the panel (echoing the footer artwork).
+const CONSTELLATIONS: [number, number][][] = [
+  [[30, 20], [150, 70], [250, 52], [300, 118], [262, 150]],
+  [[1230, 140], [1320, 30], [1450, 62], [1400, 128], [1230, 140]],
+  [[1560, 18], [1650, 70], [1760, 92]],
+];
+
+function scrollToTop() {
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+}
+
 export default function Footer() {
   return (
     <footer className="relative w-full z-40 px-2 sm:px-4 md:px-8 pb-4 sm:pb-6 pt-10 sm:pt-16 mt-auto flex justify-center overflow-hidden">
       {/* Decorative cosmic background glow for the footer area */}
       <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#020712] via-[#030c18]/30 to-transparent" />
+
+      {/* Constellations hanging over the panel */}
+      <svg
+        viewBox="0 0 1800 160"
+        preserveAspectRatio="xMidYMax slice"
+        className="absolute inset-x-0 top-0 h-[90px] sm:h-[140px] w-full pointer-events-none"
+        aria-hidden="true"
+      >
+        {CONSTELLATIONS.map((points, i) => (
+          <g key={i}>
+            <polyline
+              points={points.map((pt) => pt.join(",")).join(" ")}
+              fill="none"
+              stroke="rgba(226,232,240,0.22)"
+              strokeWidth="1"
+            />
+            {points.map(([x, y], j) => (
+              <circle key={j} cx={x} cy={y} r={j % 2 ? 1.6 : 2.2} fill="rgba(254,243,199,0.75)" />
+            ))}
+          </g>
+        ))}
+      </svg>
+
+      {/* Return to launch */}
+      <button
+        type="button"
+        onClick={scrollToTop}
+        aria-label="Back to top"
+        className="group absolute left-1/2 top-[18px] sm:top-[42px] z-20 -translate-x-1/2 flex h-11 w-11 items-center justify-center rounded-full border border-[#c8a046]/50 bg-[#020712]/90 text-amber-200 backdrop-blur-md shadow-[0_0_20px_rgba(200,160,70,0.15)] transition-all duration-300 hover:border-amber-300 hover:text-amber-100 hover:shadow-[0_0_28px_rgba(251,191,36,0.35)] cursor-pointer"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="transition-transform duration-300 group-hover:-translate-y-0.5" aria-hidden="true">
+          <path d="M12 19V5" />
+          <path d="m5 12 7-7 7 7" />
+        </svg>
+      </button>
       
       {/* Glassmorphism Panel */}
       <div className="relative w-full max-w-[1800px] rounded-[32px] bg-[#030c18]/30 backdrop-blur-xl border-[1.5px] border-[#c8a046]/40 shadow-[0_0_30px_rgba(200,160,70,0.05),inset_0_0_20px_rgba(200,160,70,0.05)] px-4 py-6 md:px-12 lg:px-16 lg:py-10 overflow-hidden flex flex-col gap-8 lg:gap-10">
@@ -73,6 +133,7 @@ export default function Footer() {
                 src="/innovision_transparent.png" 
                 alt="INNOVISION" 
                 fill 
+                sizes="(max-width: 1024px) 90vw, 750px"
                 className="object-contain object-center drop-shadow-[0_0_15px_rgba(251,191,36,0.35)]"
               />
             </div>
@@ -101,11 +162,11 @@ export default function Footer() {
               </div>
             </div>
             
-            <nav className="flex flex-col gap-4 text-center items-center">
-              {['Home', 'About', 'Events', 'Gallery', 'Merch'].map((link) => (
+            <nav aria-label="Footer" className="flex flex-col gap-4 text-center items-center">
+              {NAV_LINKS.map(({ name: link, href }) => (
                 <Link 
                   key={link} 
-                  href={`/${link.toLowerCase() === 'home' ? '' : link.toLowerCase()}`}
+                  href={href}
                   className="group relative text-amber-50/80 hover:text-amber-200 transition-colors duration-300 text-[11px] font-serif uppercase tracking-[0.3em] flex items-center justify-center gap-2 w-max"
                 >
                   <span className="opacity-0 group-hover:opacity-100 text-amber-400 text-[8px] transition-opacity duration-300 absolute -left-6">✦</span>
@@ -127,15 +188,12 @@ export default function Footer() {
             </div>
             
             <div className="flex gap-5 mb-8">
-              {[
-                { icon: InstagramIcon, href: '#' },
-                { icon: LinkedinIcon, href: '#' },
-                { icon: YoutubeIcon, href: '#' },
-                { icon: MailIcon, href: 'mailto:innovision@nitrkl.ac.in' },
-              ].map((Social, idx) => (
+              {CONNECT_LINKS.map((Social) => (
                 <a 
-                  key={idx}
+                  key={Social.href}
                   href={Social.href}
+                  aria-label={Social.label}
+                  {...(Social.href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   className="w-10 h-10 rounded-full border border-[#c8a046]/40 flex items-center justify-center text-amber-50/80 hover:text-amber-300 hover:border-amber-300 hover:bg-amber-400/10 hover:-translate-y-1 transition-all duration-300 hover:shadow-[0_0_15px_rgba(251,191,36,0.2)] group relative"
                 >
                   <Social.icon className="w-[16px] h-[16px] group-hover:scale-110 transition-transform duration-300" strokeWidth={1.5} />
@@ -175,8 +233,8 @@ export default function Footer() {
 
               <div className="flex items-center gap-2 lg:gap-4 justify-center lg:justify-start">
                 <MailIcon className="w-4 h-4 lg:w-5 lg:h-5 text-[#c8a046] shrink-0" strokeWidth={1.5} />
-                <a href="mailto:innovision@nitrkl.ac.in" className="text-[10px] lg:text-xs text-amber-50/80 tracking-[0.1em] lg:tracking-[0.15em] hover:text-amber-300 transition-colors text-center lg:text-left break-all">
-                  innovision@nitrkl.ac.in
+                <a href={`mailto:${SITE.email}`} className="text-[10px] lg:text-xs text-amber-50/80 tracking-[0.1em] lg:tracking-[0.15em] hover:text-amber-300 transition-colors text-center lg:text-left break-all">
+                  {SITE.email}
                 </a>
               </div>
             </div>
@@ -193,12 +251,14 @@ export default function Footer() {
           </div>
           
           {/* Moon Phases */}
-          <div className="flex items-center gap-5 text-amber-100/50">
+          <div className="flex items-center gap-5 text-amber-100/50" aria-hidden="true">
+            <span className="hidden md:block w-24 h-px bg-gradient-to-r from-transparent to-[#c8a046]/50" />
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="opacity-50 -scale-x-100"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.06 0 2.08-.16 3.03-.46C10.74 20.35 7.5 16.53 7.5 12s3.24-8.35 7.53-9.54C14.08 2.16 13.06 2 12 2z"/></svg>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="opacity-70"><path d="M12 2v20c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className="text-amber-300 drop-shadow-[0_0_12px_rgba(251,191,36,0.8)]"><circle cx="12" cy="12" r="10"/></svg>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="opacity-70 -scale-x-100"><path d="M12 2v20c5.52 0 10-4.48 10-10S17.52 2 12 2z"/></svg>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="opacity-50"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c1.06 0 2.08-.16 3.03-.46C10.74 20.35 7.5 16.53 7.5 12s3.24-8.35 7.53-9.54C14.08 2.16 13.06 2 12 2z"/></svg>
+            <span className="hidden md:block w-24 h-px bg-gradient-to-l from-transparent to-[#c8a046]/50" />
           </div>
 
           <div className="flex items-center gap-1.5 text-[12px] sm:text-[13px] text-amber-50/80 tracking-[0.1em] font-serif">

@@ -73,7 +73,7 @@ export default function SponsorsPage() {
           style={{ transform: "translate3d(0px, 0px, 0) scale(1.05)" }}
         >
           <Image
-            src="/bg.png"
+            src="/backdrop.png"
             alt="Space Background"
             fill
             priority

@@ -18,7 +18,7 @@ export default function GalleryPage() {
           }}
         >
           <Image
-            src="/bg.png"
+            src="/backdrop.png"
             alt="Space Background"
             fill
             priority

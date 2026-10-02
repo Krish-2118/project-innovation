@@ -69,7 +69,7 @@ export default function PaintSplatterIntro({
         
         // 2. Cache ONLY critical images for the initial render
         const imagesToPreload = [
-          "/bg.png",
+          "/backdrop.png",
           "/innovision_transparent.png"
         ];
 

@@ -1,0 +1,311 @@
+/* ==========================================================================
+   Flight Recorder (homepage Gallery) — real CSS 3D, no WebGL.
+     --p        pinned scroll progress 0 → 1   (useScrollProgress, mode "pinned")
+     --mx/--my  eased pointer position -1 → 1   (<PointerDepth />, on :root)
+     --travel   camera travel in px             (GALLERY_TRAVEL, set inline)
+     --hold     viewports held at p = 1 at the end (set inline)
+   Tokens (--ink, --paper, --gold, --muted, --frame-line) live in globals.css.
+   ========================================================================== */
+
+.fr {
+  --p: 0;
+  --travel: 3200;
+  --hold: 1;
+
+  position: relative;
+  z-index: 10;
+  /* 320vh of flight, plus the hold while the next section slides over. */
+  height: calc(320vh + var(--hold) * 100vh);
+  color: var(--paper);
+  /* Picks up the sky of the chapter above and settles into solid ink. */
+  background: linear-gradient(to bottom, transparent 0, var(--ink) 40vh);
+}
+
+.fr__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  perspective: 900px;
+}
+
+/* Warp-speed starfield */
+.fr__stars {
+  position: absolute;
+  inset: -20%;
+  opacity: 0.6;
+  pointer-events: none;
+  will-change: transform;
+  background-size: 300px 300px;
+  background-image:
+    radial-gradient(1px 1px at 7% 18%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 22% 71%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 38% 9%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 51% 48%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 64% 86%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 77% 27%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 89% 63%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 14% 94%, #fff 60%, transparent 62%),
+    radial-gradient(1px 1px at 95% 4%, #fff 60%, transparent 62%);
+  transform:
+    scale(calc(1 + var(--p) * 0.6))
+    translate3d(calc(var(--mx, 0) * -10px), calc(var(--my, 0) * -10px), 0);
+}
+
+/* --------------------------------------------------------------------------
+   Camera + photos
+   -------------------------------------------------------------------------- */
+
+.fr__camera {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  will-change: transform;
+  transform:
+    rotateY(calc(var(--mx, 0) * 4deg))
+    rotateX(calc(var(--my, 0) * -3deg))
+    translateZ(calc(var(--p) * var(--travel) * 1px));
+}
+
+.fr__photo {
+  /* Horizontal offsets shrink on small screens (see media query). */
+  --xs: 1;
+  /* Effective depth after the camera has moved: z + p × travel. */
+  --zeff: calc(var(--z) + var(--p) * var(--travel));
+
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: 0;
+  width: calc(var(--w) * 1px);
+  aspect-ratio: var(--w) / var(--h);
+  overflow: hidden;
+  border: 1px solid var(--frame-line);
+  background: repeating-linear-gradient(135deg, #18181c 0 10px, #1f1f24 10px 20px);
+  transform:
+    translate(-50%, -50%)
+    translate3d(calc(var(--x) * var(--xs) * 1vw), calc(var(--y) * 1vh), calc(var(--z) * 1px));
+  /* Fade in out of the dark, fade out just before reaching the lens. */
+  opacity: min(
+    clamp(0, calc((var(--zeff) + 2600) / 600), 1),
+    clamp(0, calc((700 - var(--zeff)) / 400), 1)
+  );
+  transition: border-color 200ms ease;
+}
+
+.fr__photo:hover {
+  border-color: var(--gold);
+}
+
+.fr__photo--hero {
+  max-width: 80vw;
+  border-color: var(--gold);
+  /* The hero only fades in — it stays at the end. */
+  opacity: clamp(0, calc((var(--zeff) + 2600) / 600), 1);
+}
+
+.fr__img {
+  object-fit: cover;
+}
+
+.fr__caption {
+  position: absolute;
+  left: 10px;
+  bottom: 8px;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  color: var(--paper);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.9);
+}
+
+/* --------------------------------------------------------------------------
+   Overlays
+   -------------------------------------------------------------------------- */
+
+.fr__intro {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-inline: 6vw;
+  text-align: center;
+  pointer-events: none;
+  /* Zooms past the viewer and is gone within the first ~16% of the flight. */
+  opacity: clamp(0, calc(1 - var(--p) * 6), 1);
+  transform: scale(calc(1 + var(--p) * 1.5));
+}
+
+.fr__eyebrow {
+  font-family: var(--font-cinzel), Georgia, serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.fr__title {
+  margin-top: 18px;
+  font-family: var(--font-cinzel), Georgia, serif;
+  font-size: clamp(48px, 7vw, 110px);
+  font-weight: 900;
+  line-height: 0.9;
+  color: var(--paper);
+}
+
+.fr__subtitle {
+  margin-top: 18px;
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-size: 24px;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.fr__cta {
+  --cta-in: calc(var(--p) - 0.86);
+
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  padding: 14px 26px;
+  border: 1.5px solid var(--gold);
+  border-radius: 9999px;
+  color: var(--gold);
+  font-family: var(--font-cinzel), Georgia, serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  /* Fades in once the hero photo has arrived. The near-step scale collapses the
+     link while it is invisible, so it can't be clicked until it appears. */
+  opacity: clamp(0, calc(var(--cta-in) * 8), 1);
+  transform: translateX(-50%) scale(clamp(0, calc(var(--cta-in) * 10000), 1));
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.fr__cta:hover {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+/* Keyboard users can always reach and see it. */
+.fr__cta:focus-visible {
+  opacity: 1;
+  transform: translateX(-50%);
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   Exit: the next section slides up over the pinned hero photo with a curved
+   top edge. Its overlap must equal the hold (HOLD_VIEWPORTS = 1 → 100vh).
+   -------------------------------------------------------------------------- */
+
+.fr + section {
+  --fr-next-bg: #070c18;
+
+  position: relative;
+  z-index: 11;
+  margin-top: -100vh;
+  background-color: var(--fr-next-bg);
+}
+
+.fr + section::before {
+  content: "";
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: -90px;
+  height: 180px;
+  border-radius: 50%;
+  background: var(--fr-next-bg);
+  box-shadow: 0 -1px 0 rgba(214, 162, 67, 0.35);
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Small screens: keep the flight, tighten the spread
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+  .fr__photo {
+    --xs: 0.6;
+    width: min(calc(var(--w) * 1px), 60vw);
+  }
+
+  .fr__photo--hero {
+    width: min(calc(var(--w) * 1px), 80vw);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Reduced motion: no pin, no 3D — a plain responsive grid
+   -------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .fr {
+    height: auto;
+    padding: 24vh 6vw 16vh;
+  }
+
+  .fr__stage {
+    position: static;
+    display: flex;
+    height: auto;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    overflow: visible;
+    perspective: none;
+  }
+
+  .fr__stars {
+    display: none;
+  }
+
+  .fr__intro {
+    position: static;
+    order: -1;
+    opacity: 1;
+    transform: none;
+  }
+
+  .fr__camera {
+    position: static;
+    display: grid;
+    width: 100%;
+    max-width: 1200px;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+    transform: none;
+    will-change: auto;
+  }
+
+  .fr__photo,
+  .fr__photo--hero {
+    /* relative, not static: the fill image positions itself against the figure */
+    position: relative;
+    inset: auto;
+    width: auto;
+    max-width: none;
+    aspect-ratio: 4 / 3;
+    opacity: 1;
+    transform: none;
+  }
+
+  .fr__cta {
+    position: static;
+    opacity: 1;
+    transform: none;
+  }
+
+  .fr + section {
+    margin-top: 0;
+  }
+}

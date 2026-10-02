@@ -163,6 +163,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
         <div
           ref={wrapperRef}
+          // Lets page entrance animations wait until the intro has handed over.
+          data-revealed={isActive ? "true" : "false"}
           className={`relative min-h-screen w-full bg-[#020712] transition-opacity duration-300 ${
             !isActive
               ? "opacity-0 pointer-events-none"
